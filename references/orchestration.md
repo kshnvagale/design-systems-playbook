@@ -39,8 +39,23 @@ is not context, it is an invitation to guess. Inline the spec excerpt.
 
 ### A worked fan-out for a real build
 
-Once tokens and naming are locked and the preview is approved, a component batch looks like
-this. Copy the shape.
+There are two fan-outs in a full build: one for the HTML preview, one for the React
+components.
+
+**HTML preview batch** (after tokens and naming are locked, before approval):
+
+| Agent | Owns (section, returns a fragment) |
+|---|---|
+| 1 | Foundations: color, type, spacing, radius, elevation, motion, icons |
+| 2 | Atoms A-L |
+| 3 | Atoms M-Z |
+| 4 | Molecules A-M |
+| 5 | Molecules N-Z |
+| 6 | Organisms |
+| 7 | Layout primitives and composed pages |
+| **Orchestrator** | The shell, the stitch, verification |
+
+**React component batch** (after approval). Copy the shape.
 
 | Agent | Owns exclusively | Returns |
 |---|---|---|
@@ -93,10 +108,39 @@ Rule of thumb: **if two agents could write the same file, only the orchestrator 
 | Contrast audit | No | Single pass over the whole token set, cheaper in one place |
 | Token authoring | No | Single shared file |
 | Registry updates | No | Single shared file |
-| HTML preview assembly | No | One file, needs a coherent whole |
+| HTML preview **sections** | Yes | Agents return **fragments**, never write the file. Orchestrator writes the shell first, then stitches. See below. |
+| HTML preview **shell and stitch** | No | Token CSS, theme toggle, base classes, concatenation. Orchestrator only. |
 | Naming decisions | No | Consistency is the entire point |
 
 ---
+
+## Fanning out a single large file
+
+The HTML preview is one file containing roughly 73 components plus foundations plus
+composed pages. Too large for one agent, and quality visibly degrades toward the end of a
+long serial build. But it is one file, so the usual exclusive-file-ownership rule cannot
+apply directly.
+
+**The pattern: ownership by section, delivery by fragment.**
+
+1. **Orchestrator writes the shell alone, first.** Every token as a CSS custom property in
+   both themes, the theme-toggle script, shared base and utility classes, section
+   scaffolding, and the checklist. This shell is the contract.
+2. **Agents receive the shell and return HTML fragments**, not files. Markup plus any
+   component-specific script for their section only.
+3. **The orchestrator concatenates.** No agent ever writes the target file. This is what
+   makes a single-file fan-out safe, and it is the only reason it works.
+4. **Orchestrator verifies the stitch**: every checklist item present, theme toggle working
+   across all sections, no invented tokens or colors, interactions actually functional.
+
+**The risk this introduces is visual inconsistency between sections built by different
+agents, and the shell is the mitigation.** A thick shell with every token and base class
+means agents compose. A thin shell means they improvise, and the sections will not match.
+If you find yourself reconciling styling differences after the stitch, the shell was too
+thin.
+
+The same pattern generalizes to any large single artifact: a docs page, a long spec, a
+generated index. Own the skeleton centrally, fan out the contents, stitch centrally.
 
 ## Sequence: phases are serial, work inside a phase is parallel
 

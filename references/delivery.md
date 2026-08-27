@@ -117,6 +117,48 @@ nobody discovers a missing Tab Group three weeks later.
 - **The company logo in place**, in the header and wherever the brand actually appears. A
   system reviewed without it gets judged as a generic kit rather than as their product.
 
+### Build it with a fan-out, not serially
+
+This file holds ~73 components plus foundations plus composed pages. That is far too much
+for one agent in one pass, and quality visibly degrades toward the end of a long serial
+build. **Dispatch subagents.** The mechanics, because a single file cannot use normal
+exclusive-file ownership:
+
+1. **The orchestrator writes the shell first, alone.** The `<style>` block with every token
+   as a CSS custom property in both themes, the theme-toggle script, shared base and
+   utility classes, the section scaffolding, and the checklist. **This shell is the
+   contract every agent builds against.**
+2. **Fan out by section.** Each agent returns an **HTML fragment**: markup plus any
+   component-specific script for its section. Agents never write the file.
+3. **The orchestrator concatenates and verifies.** No agent touches the target file. That
+   is the only reason a single-file fan-out is safe.
+
+A workable split:
+
+| Agent | Section |
+|---|---|
+| 1 | Foundations |
+| 2 | Atoms A-L |
+| 3 | Atoms M-Z |
+| 4 | Molecules A-M |
+| 5 | Molecules N-Z |
+| 6 | Organisms |
+| 7 | Layout primitives and composed pages |
+| **Orchestrator** | Shell, stitch, verification |
+
+**Every agent gets the same inline spec**: the exact token names available (they may not
+invent any), the class conventions from the shell, the required states per component, and
+the instruction that motion runs on real tokens.
+
+**After stitching, verify**: every checklist item present, theme toggle working across all
+sections, no invented tokens or colors, interactions actually functional rather than static
+markup.
+
+**The risk is visual inconsistency between sections, and the shell is the mitigation.** A
+thick shell means agents compose. A thin shell means they improvise and the sections will
+not match. If you are reconciling styling differences after the stitch, the shell was too
+thin. See `orchestration.md`.
+
 ### Why plain HTML rather than a quick Storybook
 
 It renders anywhere, including on a phone or in a Slack message. It survives being emailed
@@ -169,7 +211,70 @@ being negotiable and become a contract.
 
 ---
 
-## 4. Storybook implementation
+## 4. Choose the foundation before writing React
+
+Once the preview is approved, put three options to the user. Do not pick silently, and do
+not recommend one universally. Recommend based on their discovery answers.
+
+**The rule that survives all three:** the approved visual language does not change based on
+this choice. Same tokens, same inventory, same philosophy. This decides what the components
+are built **on**, not what they **are**.
+
+### Option 1: From scratch on headless primitives
+
+Radix Primitives or React Aria underneath, your own styling layer on top.
+
+- **Best when** the system is a genuine differentiator, the visual language is distinctive,
+  or there are unusual interaction requirements.
+- **Cost:** highest. Every component is yours to build, test, and maintain.
+- **Upside:** you own everything and nothing fights you.
+
+### Option 2: Adopt Astryx and theme it
+
+Meta's open source design system ([github.com/facebook/astryx](https://github.com/facebook/astryx),
+MIT, currently in beta).
+
+- **150+ accessible components.** Grew inside Meta over eight years, powers 13,000+ apps
+  there.
+- **React 19+, authored with StyleX, but no styling lock-in for consumers.** Override with
+  `className` using Tailwind, CSS modules, or plain CSS.
+- **Install:** `@astryxdesign/core`, a theme such as `@astryxdesign/theme-neutral`, plus
+  `@stylexjs/stylex`. CLI is `@astryxdesign/cli`.
+- **Theming is CSS custom property overrides**, so you can make it unmistakably yours
+  without forking or wrapping component source. Seven themes ship with it (neutral, butter,
+  chocolate, matcha, stone, gothic, y2k).
+- **`swizzle` ejects a component's full source** into your project when you need to own it,
+  so adopting is not a one-way door.
+- Explicitly designed so people and AI assistants build the same way from the same
+  reference.
+- **Best when** you want breadth fast, accessibility handled, and your differentiation is
+  in the product rather than the widgets.
+- **Cost:** you inherit their component API and conventions. Beta status is a real risk to
+  weigh.
+
+### Option 3: Build on shadcn/ui
+
+Copy-paste registry model on top of Radix.
+
+- Component source is copied into your repo via CLI, so you own and can edit everything
+  from day one.
+- Enormous ecosystem familiarity, and **models are heavily trained on it**, which
+  materially helps agent codegen.
+- Trades easy upstream updates for full ownership.
+- **Best when** the team already uses Tailwind, you want a fast start with total control,
+  or agents write a large share of the code.
+
+### Recommending one
+
+| Their situation | Recommend |
+|---|---|
+| Distinctive brand, dedicated design-system team, unusual interactions | Option 1 |
+| Small team, broad surface area, speed matters, widgets are not the differentiator | Option 2 |
+| Tailwind shop, agents writing much of the code, want ownership without building from zero | Option 3 |
+| Regulated context needing audited accessibility fast | Option 2 or 3, both ship tested a11y |
+| Multi-brand or white-label | Option 1 or 2, both theme cleanly through CSS custom properties |
+
+## 5. Storybook implementation
 
 Every component ships with a story file. A component without one is not done.
 
@@ -211,7 +316,7 @@ metadata from your types, which is what makes it machine-readable downstream.
 
 ---
 
-## 5. The generated skill file
+## 6. The generated skill file
 
 When the system is built, generate **one skill file** so a designer or an agent can use it
 without rediscovering it. One file, not a folder.

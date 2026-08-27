@@ -170,6 +170,49 @@ ones and people find it easier to answer.
 Never confuse them. Building toward the moodboard while ignoring their real content
 lengths produces a system that breaks on contact with actual data.
 
+### 10a. Show me component styling you like, specifically
+
+**This is a separate question from question 10, and skipping it is a known failure.** A
+real pipeline run asked for product references and illustration style, never asked for
+component-level styling, and the resulting system had no agreed answer for how a button
+should look.
+
+"I like Linear" tells you about density and restraint. It does not tell you whether buttons
+are pill or squared, whether inputs show a border at rest, whether cards separate with a
+border or a shadow, or how heavy the focus ring is. Those decisions are most of the system,
+and they are invisible in a whole-page screenshot unless you ask directly.
+
+Ask this, verbatim:
+
+> Send me screenshots of specific UI elements you like, not just whole pages. Most useful:
+> buttons (primary, secondary, and a disabled one if you have it), form inputs at rest and
+> focused, a card, a modal or dialog, a table or list row, and navigation. Screenshots from
+> anywhere: a product, a Dribbble shot, a component library. If you see a button you love,
+> that single image is worth more than a paragraph.
+
+**What to extract from a component screenshot:**
+
+| Look at | Decides |
+|---|---|
+| Button corner radius, and whether it differs from card radius | The radius language and the pill-vs-rectangle signature |
+| Button height and horizontal padding | Control sizing and the density baseline |
+| Border presence and weight on inputs at rest | Whether borders or fills carry affordance |
+| Focus treatment | Focus ring token, offset, weight |
+| Card separation: border, shadow, or background step | Whether elevation is a real axis |
+| Text weight and size inside controls | The label type role |
+| Icon size relative to its label | Icon size scale, tied to type roles |
+| Spacing between stacked form fields | Form density |
+
+**The recurring trap:** people send beautiful marketing pages as references for a dense
+internal tool. Marketing and product surfaces follow different rules. Ask which surface
+each reference represents, and if they only sent marketing pages for a product build, say
+so and ask for product screens too.
+
+**If they have no references**, do not ask them to describe it. Show two or three concrete
+treatments of the same component and let them pick: a squared button with a visible border,
+a pill button with a solid fill, a soft-rectangle button with a subtle shadow. Picking
+takes seconds; describing takes paragraphs and lands wrong.
+
 ### 11. What to actually extract from the references
 
 A moodboard is useless unless you know what to read from it. Do not describe the vibe.
@@ -259,6 +302,10 @@ both directions, whether that is a subtle animation on a high-stakes action or a
 intrusive one on a trivial click.
 
 ### 15. Brand assets, starting with the logo
+
+**Note:** illustration style is a *separate question* from component styling (10a). Getting
+an answer on one does not mean you have the other. Conflating them is exactly what caused
+component styling to go unasked in a real run.
 
 **Ask for the company logo explicitly, every time.** It is the one asset that is always
 needed and almost never volunteered.
@@ -451,6 +498,8 @@ Before proceeding, write back a short statement the user can correct in one pass
 7. **Primary color, and whether it passes as an interactive foreground**
 8. **The visual direction in one line, plus what you read from their references**
 9. **Brand assets received or missing**, logo explicitly, with any dark-background gap flagged
+10. **Component-level styling references received or missing**, and what you extracted from
+    them (radius language, control sizing, border vs shadow, focus treatment)
 10. Explicit assumptions you made for anything unanswered
 11. What you are going to do first, and what you are deliberately not doing yet
 

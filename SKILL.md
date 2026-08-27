@@ -133,8 +133,10 @@ fields" passes.
    fully interactive with motion running. **Then get explicit approval.**
    This is where completeness is proven. If a component is not in the HTML, it will be
    forgotten. `delivery.md`
-8. **React components**, on a headless primitive library, not from scratch. Only after the
-   preview is approved. `components.md`, `build-architecture.md`
+8. **Choose the foundation**, then build React components. Put three options to the user:
+   from scratch on headless primitives, adopt and theme Astryx, or build on shadcn/ui.
+   Only after the preview is approved. `delivery.md`, `components.md`,
+   `build-architecture.md`
 9. **Enforcement layer before generated screens.** Registry, lint, layer boundaries,
    off-scale values that fail to compile. Generation before enforcement amplifies drift.
 10. **Storybook**, one story file per component, published to a URL.
@@ -170,11 +172,15 @@ components that consumed primitives means re-touching every state.
 | Where can delight go? | Onboarding, empty states, success, micro-feedback. **Never** on an error, decline, or destructive confirm. |
 | Adding a microinteraction? | Name the uncertainty it resolves for the user. If you cannot, it is decoration. Feedback weight matches stakes. |
 | Ask for the logo? | **Always, explicitly.** SVG, all lockups, and a dark-background version. A one-color logo breaks in dark mode. |
+| Ask for component style refs? | **Yes, separately from moodboard.** "Send me buttons, inputs, cards you like." Illustration style is a different question. |
 | Storybook before or after approval? | After. Preview in one HTML file, get a yes, then build Storybook. |
 | Component done when? | It has a story per variant and per state, controls on every prop, a `play` function if interactive, and passes a11y. |
 | Where does the system live? | The published Storybook URL. Design tools and agents fetch from it and never re-invent. |
 | Use subagents? | **Yes, by default,** past ~6 components or ~8 files. Serial building is a failure mode, not a safe choice. |
-| Parallelize what? | Components, stories, research, audits. **Never** tokens, registry, naming, or the preview. |
+| Parallelize what? | Components, stories, research, audits, **and the HTML preview sections**. Never tokens, registry, or naming. |
+| Fan out one big file? | Yes. Orchestrator writes the shell, agents return **fragments**, orchestrator stitches. Agents never write the file. |
+| Generate the full color spectrum? | **No.** Roughly 2 full ramps (brand, neutral) plus 3-4 steps per status hue. Availability is permission. |
+| Build on what? | Ask. From scratch on headless primitives, Astryx (MIT, 150+ components, themeable), or shadcn/ui. |
 | What goes in the HTML preview? | **Everything.** The full inventory by atomic layer. Deferring a component in the React build order never means omitting it here. |
 | Which components are required? | The canonical inventory in `components.md`: 24 atoms, 27 molecules, 16 organisms, 6 layout primitives. Domain components on top. |
 | Two agents, one file? | Never. If two could write it, only the orchestrator writes it. |
@@ -233,6 +239,10 @@ measured rather than assumed.
 - Skipping the semantic tier, which is what makes token counts balloon with no clean way
   to theme.
 - Picking a brand hue without checking it can serve as an accessible interactive color.
+- **Generating the full color spectrum because the tool made it free.** Every unused ramp
+  is an invitation, and surplus color becomes a license to improvise.
+- **Asking only for illustration references and calling that visual direction.** Component
+  styling is a separate ask, and most of the system is components.
 - Building the UI palette and the data-viz palette as one thing.
 - Assuming light-mode contrast compliance transfers to dark.
 - Zero escape hatches (teams fork silently) or unlimited ones (every screen reinvents the

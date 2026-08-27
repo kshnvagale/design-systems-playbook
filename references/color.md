@@ -21,6 +21,63 @@ Radix Colors documents an exact, per-step semantic purpose for every step in a 1
 
 Steps 1-2 are backgrounds, 3-5 are component backgrounds by state (rest/hover/pressed), 6-8 are borders by strength/interactivity, 9-10 are solid/brand fills, 11-12 are text. **This step-to-purpose mapping is more valuable than the step count itself** - copy the mapping even if you settle on a different number of steps.
 
+## Generate only the color you need
+
+Before deciding how many steps, decide how many **hues**. The default instinct is to
+generate a full matrix, twelve hues times twelve steps, because the tooling makes it free.
+Do not.
+
+**A generated full spectrum is not neutral. Availability is permission.** Designers and
+agents both reach for what is in front of them. Ship 12 hues when the product needs 4 and
+the other 8 will appear somewhere, uncontrolled, and then have to be policed forever. This
+is one of the most reliable failure patterns in a real design team: give people every
+color and the colors end up in random places, justified after the fact.
+
+### What a real product actually needs
+
+| Family | How much | Why |
+|---|---|---|
+| **Brand / primary** | One hue, full ramp | The only hue that usually needs every step, because it carries backgrounds, borders, fills, and text |
+| **Neutral** | One ramp, full | Used more than everything else combined: backgrounds, borders, body text, disabled states |
+| **Status** (success, warning, danger, info) | 3-4 steps each, not full ramps | Each needs a surface, a border, and a content step. Nothing else. |
+| **Accent / secondary** | Only if it has a defined job | If you cannot name what it is for, do not generate it |
+| **Data visualization** | Separate palette, only if there are charts | Different constraints entirely, see below |
+
+For a typical product that is roughly **two full ramps plus four partial ones**, not twelve
+full ones. Around 40 real color tokens rather than 144 swatches.
+
+### The rule
+
+**Generate a ramp step when a semantic token will point at it. If no semantic token
+references a step, do not ship the step.**
+
+The semantic layer is the demand signal. The primitive layer should satisfy demand, not
+anticipate it. Work backwards: write the semantic token list first (surface, content,
+border, action, feedback families), then generate exactly the primitives those aliases
+need.
+
+Adding a step later is trivial. Removing one after it has been used in forty places is
+not. The asymmetry should decide this for you.
+
+### The honest counter-argument
+
+Multi-brand and white-label systems genuinely need more primitive headroom, because a
+second brand may land anywhere on the ramp. And a full perceptual ramp is nearly free to
+*generate*, since a script produces it in a second.
+
+Both are true, and the resolution is the same one this skill applies to token tiers:
+**generate the full ramp in the source if you like, but only expose and document the steps
+in use.** The thing to control is availability, not the existence of values in a build
+file. Hiding unused primitives from the day-to-day design surface is the identical
+argument, applied to palette size instead of tier depth.
+
+### Why this matters more with agents
+
+A model given 144 color tokens will use more of them than a model given 40. Constraining
+the option set is one of the few reliable ways to constrain output, and it costs nothing.
+The same logic runs through this skill: a coarse spacing scale, a small component
+allowlist, off-scale values that fail to compile.
+
 ## How many steps, and why systems disagree
 
 | System | Steps | Rationale |
@@ -81,6 +138,7 @@ A production palette needs, at minimum:
 ## Common failure modes
 
 1. Picking a primary/brand hue for its marketing appeal without checking it can serve as an accessible interactive-foreground color (bright yellow/lime/light-orange brands hit this constantly).
+2. **Generating the full spectrum because the tool made it easy.** Every unused ramp is an invitation, and the surplus becomes a license to improvise. Generate against the semantic token list, not against what the generator can produce.
 2. Building the UI palette and the data-viz palette as the same thing - chart colors then accidentally collide with status colors (a "red" data series reading as an error state).
 3. Generating a ramp in HSL by eye, producing uneven perceptual steps that look "off" without anyone being able to say exactly why.
 4. Skipping a genuinely separate accessibility pass for dark mode, assuming light-mode contrast compliance transfers.
