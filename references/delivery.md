@@ -98,6 +98,68 @@ The distinction, stated so an agent cannot misread it:
 A deferred component still appears in the HTML, so the user approves the full scope and
 nobody discovers a missing Tab Group three weeks later.
 
+### Layout: fixed left nav, scrolling right pane
+
+**Do not build this as one long scrolling column.** A complete inventory is roughly 73
+components plus foundations plus composed pages, which lands somewhere around 60,000px of
+vertical scroll. At that length the only way to find anything is to scroll past everything
+else, and a reviewer cannot tell what exists without seeing all of it.
+
+Use a two-pane docs shell:
+
+```
+┌──────────────────┬────────────────────────────────────────┐
+│  NAV (fixed)     │  PREVIEW (scrolls)                      │
+│  240-280px       │                                         │
+│                  │  ┌───────────────────────────────────┐  │
+│  Foundations     │  │ Button                            │  │
+│  Atoms      24   │  │ variants, sizes, all states       │  │
+│   Button       ● │  └───────────────────────────────────┘  │
+│   Icon Button    │                                         │
+│   Link           │  ┌───────────────────────────────────┐  │
+│  Molecules  27   │  │ Icon Button                       │  │
+│  Organisms  16   │  └───────────────────────────────────┘  │
+│  Layout      6   │                                         │
+│  Pages           │                                         │
+└──────────────────┴────────────────────────────────────────┘
+```
+
+**Left pane requirements:**
+
+- Fixed or sticky, full height, independently scrollable.
+- Grouped by atomic layer, in the same order as the sections, with a count per group.
+- Every component listed by name. This doubles as the completeness checklist: a reviewer
+  scans the nav rather than the page to see what exists.
+- Active item tracks scroll position, so you always know where you are.
+- A filter or search box. Seventy-three items is too many to scan reliably.
+- A theme toggle and any other axis switch, pinned so it is reachable from anywhere.
+
+**Right pane requirements:**
+
+- Scrolls independently of the nav.
+- **Constrain content width** (roughly 1100-1200px) rather than letting it stretch to the
+  viewport. Full-bleed only for layout primitives and composed pages, where the width is
+  the point.
+- One component per block, each block visually separated as its own panel or card with a
+  heading, not run together.
+
+### Spacing: let it breathe
+
+The most common failure in a generated preview is everything crammed together, which makes
+it impossible to tell where one component ends and the next begins.
+
+| Between | Space |
+|---|---|
+| Major sections (Atoms, Molecules) | 96-128px, with a visible divider or heading band |
+| Component blocks within a section | 64-80px |
+| Variant rows inside one component | 32-40px |
+| Individual specimens in a row | 16-24px |
+| A component and its label or caption | 12-16px |
+
+Give every component block a generous internal padding (32-40px) and a subtle border or
+surface step so it reads as a discrete unit. Label every specimen with its variant and
+state name. An unlabeled grid of buttons is decoration; a labeled one is documentation.
+
 ### Hard requirements
 
 - **Single file.** CSS in a `<style>` block, JS in a `<script>` block. Fonts and logo may
@@ -114,6 +176,11 @@ nobody discovers a missing Tab Group three weeks later.
 - **Working theme toggle**, light and dark live. Plus any brand or density axis.
 - **Real content.** Real product nouns, realistic string lengths, plausible numbers. Lorem
   ipsum hides every layout problem that matters.
+- **Correct ARIA roles on styled native controls.** A checkbox styled as a switch still
+  announces as a checkbox unless it carries `role="switch"`. Same for anything where the
+  visual affordance and the native element disagree. This is the single most common
+  accessibility bug in a generated preview, and it survives into React if you do not catch
+  it here.
 - **The company logo in place**, in the header and wherever the brand actually appears. A
   system reviewed without it gets judged as a generic kit rather than as their product.
 
