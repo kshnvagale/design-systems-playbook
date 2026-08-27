@@ -92,6 +92,74 @@ Three things worth noticing, because they contradict common intuition:
 Treat this as prevalence, not prescription. It tells you what is *usually* needed. Your
 interface inventory tells you what *you* need. Where they disagree, your inventory wins.
 
+## The canonical component inventory
+
+Prevalence data tells you what recurs. This tells you what your system needs to **contain**
+by v1. It exists because the most common real failure is not building the wrong component,
+it is silently omitting whole ones: tab groups, side drawers, switches, toggles, and
+accordions all go missing when the inventory lives only in someone's head.
+
+Treat this as the **floor**. Domain components go on top.
+
+### Atoms (24)
+
+Button · Icon Button · Link · Text · Heading · Icon · Badge · Status Dot · Avatar ·
+Divider · Spinner · Skeleton · Checkbox · Radio · **Switch** · **Toggle Button** ·
+Text Input · Text Area · Number Input · Select · Slider · Kbd · Code · Progress Bar
+
+### Molecules (27)
+
+Field (label + input + help + error) · Button Group · **Toggle Button Group** ·
+Segmented Control · Avatar Group · Breadcrumbs · Pagination · **Tab List / Tab Group** ·
+**Accordion (Collapsible)** · Card · Clickable Card · Selectable Card · Alert · Banner ·
+Toast · Tooltip · Popover · Hover Card · Dropdown Menu · More Menu (overflow) ·
+Search Input · Stepper · Empty State · Chip / Tag · Date Input · Timestamp · Metadata List
+
+### Organisms (16)
+
+App Shell · Top Nav · Side Nav · **Side Drawer** · **Bottom Sheet** · Dialog / Modal ·
+Command Palette · Table · Data Table · List · Tree List · Toolbar · Carousel ·
+Calendar / Date Picker · File Upload · Typeahead / Combobox
+
+### Layout primitives (6)
+
+Stack · Grid · Section · Container · Aspect Ratio · Resize Handle
+
+### Where this comes from
+
+Derived from prevalence data above plus **Meta's Astryx**
+([astryx.atmeta.com/components](https://astryx.atmeta.com/components)), a real shipping
+system with roughly 90 components across Action, Chat, Container, Content, Data Input,
+Feedback and Status, Layout, Navigation, Overlay, Table and List, and Utility.
+
+Two transferable lessons from how Astryx is organized:
+
+**It categorizes by function, not composition.** Action, Overlay, Data Input, Navigation.
+Atomic layers organize by composition instead. These are not in conflict and you want both:
+functional grouping for browsing and documentation, atomic layers for build order and
+dependency direction. Same components, two indexes.
+
+**It ships a whole Chat cluster** (Chat Composer, Chat Message, Chat Tool Calls, Chat
+System Message) because Meta builds AI products. That is the clearest possible evidence for
+inventory-driven building: nothing generic would suggest those, and they exist because the
+real product needed them. A payments company ships an `Amount`. A health product ships a
+vitals display. **The canonical list is the minimum; your interface inventory supplies the
+rest.**
+
+### Inventory versus build order: do not confuse them
+
+| Question | Answered by | Applies to |
+|---|---|---|
+| What must exist? | The canonical inventory | Completeness. The HTML preview shows all of it. |
+| What gets built first? | The tiers below | Sequencing. React build order only. |
+
+**Deferring a component in the build order is never permission to omit it from the
+inventory or from the HTML preview.** Those are different artifacts answering different
+questions. See `delivery.md`.
+
+The layer names here are the same ones used in the HTML preview sections and in package
+structure (`build-architecture.md`), so one vocabulary runs from preview to shipped code.
+
 ## A defensible build order
 
 **Tier 1 (build first, roughly 12-16 components).** High-frequency, low-ambiguity, and

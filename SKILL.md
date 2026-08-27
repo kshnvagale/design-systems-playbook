@@ -36,9 +36,9 @@ The artifact set, in build order:
 |---|---|---|
 | **Discovery** | Written context summary, corrected by the user. Visual philosophy in 3-5 falsifiable sentences. Stated assumptions. | The user has corrected at least one line of it |
 | **Foundations** | `tokens.json` (DTCG). A **deterministic build script** compiling it to CSS custom properties and any platform outputs. Color ramps, type roles, spacing, radius, motion, elevation. Contrast audit across every token pairing in every theme. | Contrast audit passes; no component references a raw value |
-| **Components** | 12-16 components in code on headless primitives. Every interaction state authored. `registry.json` allowlist. | A screen can be built from them without inventing anything |
-| **Preview** | **One self-contained HTML file**, fully interactive, motion running, every variant and state, theme toggle, real content, the company logo in place, plus one composed screen. | A stakeholder can open it by double-clicking and judge it |
-| **Approval** | An explicit yes from the user on look, feel, and motion. | Recorded. **Storybook does not start before this.** |
+| **Preview** | **One self-contained HTML file with the COMPLETE inventory**, sectioned by atomic layer, fully interactive, motion running, every variant and state, theme toggle, real content, the company logo, plus 2-3 composed screens. | Every component that will exist is visible and judgeable |
+| **Approval** | An explicit yes on look, feel, motion, and completeness. | Recorded. **React work does not start before this.** |
+| **Components** | React components on headless primitives, uniform file shape per component, every interaction state, `registry.json` allowlist. | A screen can be built from them without inventing anything |
 | **Storybook** | A story file per component: CSF3, `autodocs`, `argTypes` with controls on every prop, one story per variant and per state, `play` functions for interactions, theme switcher, a11y passing. Published to a URL. | Every component is explorable and interactive by someone who did not build it |
 | **Enforcement** | Lint rules (no raw values, registry-only imports). Off-scale utilities that fail to compile. CI wiring. A fixture test per rule. Automated a11y checks. | CI fails on a raw hex, and every rule has been observed to fire |
 | **Docs** | A page per component: anatomy, live example, props table, all states, a11y notes, content guidance, do/don't. | A new engineer can use a component without asking anyone |
@@ -66,7 +66,8 @@ for components that do not exist.
 | `references/color.md` | Ramp construction, OKLCH, WCAG/APCA, palette composition |
 | `references/visual-language.md` | Typography, grid and responsive, iconography, motion, state design, content and voice |
 | `references/naming.md` | Token taxonomy, component names vs ARIA, variant and prop naming |
-| `references/components.md` | Interface inventory, prevalence data, build order, API design |
+| `references/components.md` | Canonical inventory, interface inventory method, build order, API design |
+| `references/build-architecture.md` | Uniform component file shape, layer dependency rules, the verify pipeline |
 | `references/governance.md` | Team models, contribution, adoption, why systems die |
 | `references/ai-agents.md` | Agent-consumable delivery, enforcement, specs-as-data, Figma's real position |
 | `references/orchestration.md` | Running the build with subagents: what to parallelize, ownership, verification |
@@ -99,11 +100,14 @@ prose, it does not exist. `ai-agents.md`
 the system correctly." None asks "was the system enough." Only building a real screen and
 comparing it side by side answers that. `evaluation.md`
 
-**6. Run it as an orchestrator, not a soloist.** For anything beyond a handful of
-components, fan work out to subagents. But the orchestrator owns the user conversation,
-the token source, the registry, naming, and every decision. Subagents get **exclusive file
-ownership, the spec inline, and an explicit return format.** Verify the artifacts on
-return, never the self-report. `orchestration.md`
+**6. Delegate by default. This is not optional.** For any build past roughly 6 components
+or 8 files, **you MUST run as an orchestrator and fan work out to subagents.** Doing it
+serially in one session is a failure mode: it is slower, it burns your context on
+implementation detail, and quality degrades on the later components because the context is
+full by then. Announce the plan before dispatching. The orchestrator keeps the user
+conversation, the token source, the registry, naming, and every decision. Subagents get
+**exclusive file ownership, the spec inline, and an explicit return format.** Verify the
+artifacts on return, never the self-report. `orchestration.md`
 
 **7. Lead with design, land in code.** A system built only from architecture and
 enforcement will be correct and generic. Decide the visual language deliberately
@@ -122,12 +126,17 @@ fields" passes.
    icon grid and stroke, motion intent, voice. Do this *with* tokens, not after.
 4. **Primitive plus semantic tokens, light mode first.** ~40-80 primitives, ~60-120 semantic.
 5. **Lock naming.** Renaming after adoption is a breaking change.
-6. **Top 12-16 components**, on a headless primitive library, not from scratch.
-7. **Dark mode as a second authored value set**, never an inversion.
-8. **Enforcement layer before generated screens.** Registry, lint, off-scale values that
-   fail to compile. Generation before enforcement amplifies drift.
-9. **Single HTML preview**, fully interactive with motion, then **get explicit approval.**
-   Do not build Storybook first; it is expensive to redo. `delivery.md`
+6. **Dark mode as a second authored value set**, never an inversion. Needed before the
+   preview, because the preview must ship a working theme toggle.
+7. **Single HTML preview containing the COMPLETE component inventory**, organized in
+   atomic layers (foundations, atoms, molecules, organisms, layout primitives, pages),
+   fully interactive with motion running. **Then get explicit approval.**
+   This is where completeness is proven. If a component is not in the HTML, it will be
+   forgotten. `delivery.md`
+8. **React components**, on a headless primitive library, not from scratch. Only after the
+   preview is approved. `components.md`, `build-architecture.md`
+9. **Enforcement layer before generated screens.** Registry, lint, layer boundaries,
+   off-scale values that fail to compile. Generation before enforcement amplifies drift.
 10. **Storybook**, one story file per component, published to a URL.
 11. **Generate the system's own skill file** so designers and agents can use it without
     rediscovering it. `delivery.md`
@@ -164,7 +173,10 @@ components that consumed primitives means re-touching every state.
 | Storybook before or after approval? | After. Preview in one HTML file, get a yes, then build Storybook. |
 | Component done when? | It has a story per variant and per state, controls on every prop, a `play` function if interactive, and passes a11y. |
 | Where does the system live? | The published Storybook URL. Design tools and agents fetch from it and never re-invent. |
-| Parallelize with subagents? | Yes for components, stories, research, audits. **Never** for tokens, registry, naming, or the preview. |
+| Use subagents? | **Yes, by default,** past ~6 components or ~8 files. Serial building is a failure mode, not a safe choice. |
+| Parallelize what? | Components, stories, research, audits. **Never** tokens, registry, naming, or the preview. |
+| What goes in the HTML preview? | **Everything.** The full inventory by atomic layer. Deferring a component in the React build order never means omitting it here. |
+| Which components are required? | The canonical inventory in `components.md`: 24 atoms, 27 molecules, 16 organisms, 6 layout primitives. Domain components on top. |
 | Two agents, one file? | Never. If two could write it, only the orchestrator writes it. |
 | Trust a subagent's report? | No. List the files, check `git status`, re-run the gates, spot-read one file in full. |
 | Batch size? | 3-5. Expect partial failure and make every task independently retryable. |

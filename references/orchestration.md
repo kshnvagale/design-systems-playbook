@@ -1,8 +1,65 @@
 # Orchestration: running the build with subagents
 
-A design system build is wide but shallow in places (thirty components, each independent)
-and narrow but deep in others (one token source everything depends on). That shape suits
-an orchestrator plus subagents, but only if the split respects which is which.
+## Default behavior: delegate. This is not optional.
+
+**For any design-system build past roughly 6 components or 8 files, you MUST run as an
+orchestrator and fan work out to subagents.** This is the default execution mode, not a
+technique to consider if you feel like it.
+
+Building serially in one session is a failure mode, not a safe conservative choice:
+
+- It is slower by a large multiple on work that is genuinely independent.
+- It burns the orchestrator's context on implementation detail that should never enter it.
+  You need that context for decisions and reconciliation.
+- **Quality degrades on the later components**, because by the time you reach component 40
+  the context is full of the previous 39 and attention to the spec has decayed.
+
+A full inventory build is roughly 70 components. That is not a serial job.
+
+**Announce the plan before dispatching.** Tell the user which agents you are creating, what
+each one owns, and what comes back. Then dispatch.
+
+### Before every fan-out, run this checklist
+
+1. Is the spec written down and stable? If it is still changing, do not dispatch.
+2. Does every agent have **exclusive file ownership**, with zero overlap?
+3. Does each prompt carry the spec inline, the token and component allowlist, the
+   constraints that will judge it, and the exact return format?
+4. Is the batch 3-5 agents?
+5. Do I know how I will verify each return?
+
+If any answer is no, fix it before dispatching. A bad dispatch costs more than the
+serial work it replaced.
+
+### A subagent cannot see your conversation
+
+It has no access to the user's messages, your reasoning, or the decisions you made three
+steps ago. **Anything it needs must be in its prompt.** "Read the skill and figure it out"
+is not context, it is an invitation to guess. Inline the spec excerpt.
+
+### A worked fan-out for a real build
+
+Once tokens and naming are locked and the preview is approved, a component batch looks like
+this. Copy the shape.
+
+| Agent | Owns exclusively | Returns |
+|---|---|---|
+| 1 | `ui/{button,icon-button,link,text,heading,icon}.tsx` + their stories | file paths, gaps hit |
+| 2 | `ui/{badge,status-dot,avatar,divider,spinner,skeleton}.tsx` + stories | same |
+| 3 | `ui/{checkbox,radio,switch,toggle-button,slider,progress-bar}.tsx` + stories | same |
+| 4 | `ui/{text-input,text-area,number-input,select,field}.tsx` + stories | same |
+| **Orchestrator** | `tokens.json`, `registry.json`, the preview, all naming, reconciliation | - |
+
+Note what the orchestrator kept: every shared, single-writer artifact. Note what the agents
+got: disjoint file sets that can fail and be retried independently.
+
+Then the next batch does molecules, the next does organisms. Layer order matters, because
+molecules import atoms and organisms import both.
+
+A full canonical inventory (24 atoms, 27 molecules, 16 organisms, 6 layout primitives) is
+roughly 15 agent-batches of 4-5. Plan for that shape rather than discovering it at
+component 12.
+
 
 **The orchestrator owns the user relationship, every shared artifact, and every decision.
 Subagents own bounded, non-overlapping implementation work and report back.**
