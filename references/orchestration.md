@@ -133,11 +133,20 @@ apply directly.
 4. **Orchestrator verifies the stitch**: every checklist item present, theme toggle working
    across all sections, no invented tokens or colors, interactions actually functional.
 
-**The risk this introduces is visual inconsistency between sections built by different
-agents, and the shell is the mitigation.** A thick shell with every token and base class
-means agents compose. A thin shell means they improvise, and the sections will not match.
-If you find yourself reconciling styling differences after the stitch, the shell was too
-thin.
+**Close inconsistency structurally, do not rely on a thick shell.** The shell must define
+every component base class, not just tokens, and the rule for every agent is: **return
+markup only, never CSS, never inline styles.** An agent that cannot author a style cannot
+invent one, and the only remaining move when something is missing is to report the gap.
+
+Then verify mechanically rather than by eye: extract every class used in the stitched file
+and diff it against the classes the shell defines. Anything not in the shell is invention,
+and the diff names it. Plus greps for `<style`, inline `style=`, and color literals, all of
+which must be zero outside the shell.
+
+Sequence it as **shell, then one reference section you build yourself, then fan out.**
+Models weight a nearby concrete example far above stated instructions, and building one
+section first also proves the shell is sufficient before seven agents discover it is not.
+See `delivery.md`.
 
 The same pattern generalizes to any large single artifact: a docs page, a long spec, a
 generated index. Own the skeleton centrally, fan out the contents, stitch centrally.

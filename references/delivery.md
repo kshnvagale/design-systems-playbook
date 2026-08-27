@@ -154,10 +154,61 @@ the instruction that motion runs on real tokens.
 sections, no invented tokens or colors, interactions actually functional rather than static
 markup.
 
-**The risk is visual inconsistency between sections, and the shell is the mitigation.** A
-thick shell means agents compose. A thin shell means they improvise and the sections will
-not match. If you are reconciling styling differences after the stitch, the shell was too
-thin. See `orchestration.md`.
+### Solving inconsistency properly: agents write markup, never CSS
+
+"Make the shell thick" is a hedge. The actual fix is the same one used everywhere else in
+this skill: **make invention structurally impossible rather than discouraged.**
+
+**The shell must define every component base class, not just the tokens.** Not
+`--color-action-primary` alone, but `.btn`, `.btn--primary`, `.btn--sm`, `.input`,
+`.input--invalid`, `.card`, `.chip`. Then the rule for every agent is one line:
+
+> Return markup only. You may not write CSS, `<style>` blocks, or inline `style`
+> attributes. Compose from the classes defined in the shell. If you need something the
+> shell does not provide, STOP and report it as a gap. Do not create it.
+
+An agent that cannot author a style cannot invent one. Inconsistency stops being a matter
+of discipline and becomes structurally unavailable, and the only remaining move when
+something is missing is the one you want: report the gap.
+
+### Verify it mechanically, not by eye
+
+Because the vocabulary is closed, the check is deterministic:
+
+```
+1. Extract every class attribute value in the stitched file.
+2. Diff that set against the class names the shell defines.
+3. Any class not in the shell is invention, and the diff names it exactly.
+```
+
+Plus three greps that must all return zero outside the shell:
+
+- `<style` blocks
+- inline `style=` attributes
+- hex, `rgb()`, or `hsl()` literals
+
+That is seconds of work against 73 components, versus eyeballing them.
+
+### Sequence: shell, then one reference section, then fan out
+
+Do not go straight from shell to fan-out. Build **one section yourself first**, completely,
+and pass it to every agent as a worked example.
+
+Models weight a nearby concrete example far more heavily than stated instructions. One
+fully-built, correctly-styled section in the prompt does more than any amount of prose
+about conventions. It also proves the shell is actually sufficient before seven agents
+discover it is not.
+
+This is the general rule from `orchestration.md` ("build the first instance of a new
+pattern yourself, then fan out") applied to the preview.
+
+### What remains, honestly
+
+This closes styling invention. It does not close **structural** inconsistency: two agents
+can compose valid classes into differently-shaped markup for similar components. The
+reference section is the main defense, and a final visual pass over the stitched file is
+the backstop. Gates prove discipline, not sufficiency, which is the same limit described in
+`evaluation.md`.
 
 ### Why plain HTML rather than a quick Storybook
 
@@ -213,8 +264,46 @@ being negotiable and become a contract.
 
 ## 4. Choose the foundation before writing React
 
-Once the preview is approved, put three options to the user. Do not pick silently, and do
-not recommend one universally. Recommend based on their discovery answers.
+Once the preview is approved, put three options to the user. Do not pick silently. But do
+not present them as equally weighted either: **there is a default, and you should say so.**
+
+### The default: shadcn/ui as the base, Astryx as the reference
+
+For most teams building a design system in 2026, **build on shadcn/ui and use Astryx as a
+spec rather than a dependency.** Four reasons, in order of weight:
+
+1. **Training data is the single biggest lever on agent codegen quality.** Models know
+   shadcn cold and can recall its component APIs without a lookup. Astryx shipped
+   recently and is in beta, so every one of its 150 component APIs has to be fetched from
+   docs or MCP on every generation. That is a real, recurring context cost. "Designed for
+   agents" is a claim about affordances; "the model already knows it" is a different and
+   currently stronger property.
+2. **You own the source from day one.** No beta dependency under your entire component
+   layer, no upstream API churn, no waiting on someone else's release. Astryx's `swizzle`
+   gets you there eventually; shadcn starts you there.
+3. **shadcn is the registry pattern this skill already recommends.** Copy-paste
+   distribution, a `registry.json` an agent can query, components you can lint against an
+   allowlist. Adopting it makes the agent-consumability work in `ai-agents.md` cheaper,
+   not harder.
+4. **Adopting 150 components contradicts the first rule in this skill.** A design system
+   is downstream of *your* product. Taking Meta's inventory wholesale is the exact
+   opposite of building from your interface inventory, and most of those 150 will never
+   be used.
+
+**What to take from Astryx instead:** it is MIT, and its component inventory, API
+conventions, and design conventions (published in the repo wiki) are genuinely excellent
+and hard-won over eight years. Read them. Use the inventory as your completeness floor,
+which `components.md` already does. Steal the conventions. Do not take the dependency.
+
+**When Astryx-as-dependency is genuinely the right call:** a large team needing broad
+surface area fast, where the widgets are explicitly not the differentiator, beta risk is
+acceptable, and humans rather than agents write most of the code.
+
+**When from-scratch is right:** the system itself is the product or a real competitive
+asset, the visual language is distinctive enough that you would override most of a base
+library anyway, or there are genuinely unusual interaction requirements.
+
+Recommend against the discovery answers, and say which one you are recommending and why.
 
 **The rule that survives all three:** the approved visual language does not change based on
 this choice. Same tokens, same inventory, same philosophy. This decides what the components
@@ -268,11 +357,15 @@ Copy-paste registry model on top of Radix.
 
 | Their situation | Recommend |
 |---|---|
-| Distinctive brand, dedicated design-system team, unusual interactions | Option 1 |
-| Small team, broad surface area, speed matters, widgets are not the differentiator | Option 2 |
-| Tailwind shop, agents writing much of the code, want ownership without building from zero | Option 3 |
+| **Default, most teams** | **Option 3**, with Astryx read as a reference |
+| Agents write a large share of the code | Option 3. Training-data familiarity dominates. |
+| Already a Tailwind shop | Option 3 |
+| The design system is itself the product or a competitive asset | Option 1 |
+| Distinctive visual language you would override most of a base library for | Option 1 |
+| Large team, broad surface fast, widgets not the differentiator, humans writing code | Option 2 |
 | Regulated context needing audited accessibility fast | Option 2 or 3, both ship tested a11y |
 | Multi-brand or white-label | Option 1 or 2, both theme cleanly through CSS custom properties |
+| Beta dependency is unacceptable | Not Option 2 |
 
 ## 5. Storybook implementation
 
