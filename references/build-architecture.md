@@ -131,8 +131,10 @@ them in a deliberate order and fails the build on the first non-zero exit.
 | 4 | boundary audit | a layer importing upward |
 | 5 | spec-existence audit | a shipped component with no spec file |
 | 6 | registry check | an import that resolves to nothing in the allowlist |
-| 7 | types | invalid token names, invalid props |
-| 8 | tests | behavior and a11y |
+| 7 | semantic heading audit | a styled div standing in for a real heading element |
+| 8 | anchor integrity audit | an internal link pointing at an id that does not exist |
+| 9 | types | invalid token names, invalid props |
+| 10 | tests | behavior and a11y |
 
 **The ordering is not cosmetic.** A later gate's result is meaningless if an earlier one is
 broken: there is no point auditing token usage in a tree that does not compile, and no
@@ -168,6 +170,66 @@ treats a missing one as a build failure.
 
 Same family as the registry allowlist and the boundary audit: cross-artifact checks that
 catch what no single-artifact gate can see.
+
+---
+
+## The semantic heading audit
+
+**Every element that presents as a heading must be a real heading element.** If it carries
+a heading-ish class, sits in a heading slot, or reads as a section title, it is `h1`
+through `h6` or it fails. Levels may not skip, either: an `h4` directly under an `h2` is a
+broken outline even though both are real elements.
+
+This is worth a gate because it is invisible to everything else. A styled div renders
+identically, compiles, passes tests, and survives a visual diff without a pixel of
+difference. What it destroys is the document outline: screen-reader users navigate by
+heading as a primary mode and see almost nothing, and any tooling that walks the heading
+tree (a generated table of contents, an outline view, a docs indexer) sees the same
+nothing. In one reviewed generated preview, over a hundred styled divs were acting as
+component headings against roughly thirty real heading elements.
+
+Agents produce this constantly, and the reason is structural rather than careless. Agent
+output is styling-led: it reaches for a div plus a class because that is where the visual
+intent lives, and the semantic element is an afterthought that nothing punishes.
+
+Implementation: parse the rendered output or the source, collect every element carrying a
+heading-ish class or `role="heading"`, and fail on any that is not `h1` through `h6`. Then
+walk the resulting heading tree in document order and fail on a level skip.
+
+The one legitimate exception is `role="heading"` with an explicit `aria-level`, which is
+the correct answer when a real heading element genuinely cannot be used. Allow that pairing
+explicitly in the gate rather than blanket-failing, and require `aria-level` to be present
+so the exception still carries its outline position.
+
+---
+
+## The anchor integrity audit
+
+**Every internal `href="#id"` must resolve to an element carrying that id in the same
+document.** No exceptions worth carving out.
+
+A dead in-page link is normally a small annoyance. It stops being small when the
+navigation doubles as a completeness checklist, which is exactly the arrangement the
+preview uses (`delivery.md`). An entry that does not resolve is the artifact asserting that
+a component exists when it does not. A checklist that lies is worse than no checklist,
+because it is trusted. In one real case a generated navigation carried eight links pointing
+at ids that were never emitted, and the reviewer had no way to tell without clicking every
+one.
+
+Implementation is about ten lines: collect every `href` beginning with `#`, collect every
+`id` in the document, and fail on the set difference. Report the dead anchors by name so
+the fix is obvious.
+
+Generalize it past the preview. Any generated index, nav, table of contents, or docs
+sidebar deserves the same check, and so does any cross-file link scheme if your docs are
+multi-page. It is the natural companion to the spec-existence audit: both assert that a
+thing being claimed actually exists, one for files and one for anchors.
+
+The registry allowlist, the boundary audit, the spec-existence audit, and both gates above
+share one property worth naming. **They are cross-artifact or structural checks that pass
+every single-file gate**, because the code compiles, renders, and looks correct. That is
+precisely the category of defect agents produce most reliably, and the only defense is a
+gate that compares one artifact against another rather than checking either alone.
 
 ---
 
