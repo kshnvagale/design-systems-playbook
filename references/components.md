@@ -70,7 +70,7 @@ for prioritization rather than a guess. Full ranked data:
 | Spinner | 66 | Fieldset | 32 |
 | Link | 64 | File upload | 32 |
 | Navigation | 62 | Skeleton | 30 |
-| Toggle / Switch | 60 | Search input | 30 |
+| Switch | 60 | Search input | 30 |
 | Breadcrumbs | 55 | Heading | 29 |
 | Textarea | 52 | Segmented control | 28 |
 
@@ -99,7 +99,40 @@ by v1. It exists because the most common real failure is not building the wrong 
 it is silently omitting whole ones: tab groups, side drawers, switches, toggles, and
 accordions all go missing when the inventory lives only in someone's head.
 
-Treat this as the **floor**. Domain components go on top.
+**This is a review instrument, not a build order.** Walk it item by item against your
+interface inventory and record a decision for every entry. Items you include get built.
+Items you exclude get **one line saying why**.
+
+That distinction matters because the two failure modes are opposite and both real:
+
+- Build all 73 speculatively and you have violated rule 1 (start from the product, not
+  another system's catalog), rule 3 (ship a small real slice first), and the first listed
+  cause of death in `governance.md` (building everything at once).
+- Have no list at all and components go silently missing. That is the failure this list was
+  added to fix: tab groups, drawers, switches, toggles, and accordions all absent from a
+  real build because nothing existed to check against.
+
+Reviewing with recorded exclusions gets you the completeness check without the mandate.
+The precedent is WCAG conformance: you assess every criterion and record N/A with
+justification rather than being forced to satisfy all of them.
+
+**Your interface inventory decides scope. This list decides that you noticed.**
+
+Record the outcome in `PROGRESS.md` (see `handoff.md`):
+
+```
+Canonical inventory reviewed: 73 items
+Included: 11
+Deliberately excluded: 62
+  - Data Table       no tabular data in this product
+  - Command Palette  single-screen tool, no navigation depth
+  ...
+```
+
+Six months later, "nobody thought of it" and "we decided against it, here is why" are very
+different answers. Only the recorded exclusion distinguishes them.
+
+Domain components go on top of whatever you include.
 
 ### Atoms (24)
 
@@ -110,26 +143,35 @@ Text Input · Text Area · Number Input · Select · Slider · Kbd · Code · Pr
 ### Molecules (27)
 
 Field (label + input + help + error) · Button Group · **Toggle Button Group** ·
-Segmented Control · Avatar Group · Breadcrumbs · Pagination · **Tab List / Tab Group** ·
-**Accordion (Collapsible)** · Card · Clickable Card · Selectable Card · Alert · Banner ·
-Toast · Tooltip · Popover · Hover Card · Dropdown Menu · More Menu (overflow) ·
-Search Input · Stepper · Empty State · Chip / Tag · Date Input · Timestamp · Metadata List
+Segmented Control · Avatar Group · Breadcrumbs · Pagination · **Tabs** ·
+**Accordion** · Card · Clickable Card · Selectable Card · Alert · Banner ·
+Toast · Tooltip · Popover · Hover Card · Menu · More Menu (overflow) ·
+Search Input · Stepper · Empty State · Chip · Date Input · Timestamp · Metadata List
 
 ### Organisms (16)
 
-App Shell · Top Nav · Side Nav · **Side Drawer** · **Bottom Sheet** · Dialog / Modal ·
+App Shell · Top Nav · Side Nav · **Side Drawer** · **Bottom Sheet** · Dialog ·
 Command Palette · Table · Data Table · List · Tree List · Toolbar · Carousel ·
-Calendar / Date Picker · File Upload · Typeahead / Combobox
+DatePicker · File Upload · Combobox
 
 ### Layout primitives (6)
 
 Stack · Grid · Section · Container · Aspect Ratio · Resize Handle
 
+**These names are the resolved, ARIA-aligned set.** They already apply `naming.md`: no
+slash names standing in for an unmade decision, `Dialog` not "Modal" (Modal is a behavior a
+dialog can have), `Menu` not "Dropdown" (not an ARIA pattern), `Chip` for the interactive
+one with `Badge` as the passive counterpart. `naming.md` governs any addition. Do not
+reintroduce a slash.
+
+**This file is the single source for the inventory.** Other files reference it rather than
+restating it, so the list cannot drift.
+
 ### Where this comes from
 
 Derived from prevalence data above plus **Meta's Astryx**
 ([astryx.atmeta.com/components](https://astryx.atmeta.com/components)), a real shipping
-system with roughly 90 components across Action, Chat, Container, Content, Data Input,
+system with 150+ components (the public components index lists a browsable subset) across Action, Chat, Container, Content, Data Input,
 Feedback and Status, Layout, Navigation, Overlay, Table and List, and Utility.
 
 Two transferable lessons from how Astryx is organized:

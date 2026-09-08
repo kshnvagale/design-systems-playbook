@@ -1,11 +1,15 @@
 ---
 name: "design-systems-playbook"
-description: "Use when starting, planning, auditing, or reviewing a design system: token architecture, light/dark theming, color palettes, naming conventions, which components to build, governance, and how to make the system consumable and enforceable for AI coding agents. Built for products at 10,000+ users spanning B2B, B2C, and internal tools. Read before proposing any design-system structure, and before advising a designer of any level."
+description: "Use when starting, planning, auditing, or reviewing a design system: token architecture, light/dark theming, color palettes, naming conventions, which components to build, governance, and how to make the system consumable and enforceable for AI coding agents. Scoped to React and TypeScript. Built for products at 10,000+ users spanning B2B, B2C, and internal tools. Read before proposing any design-system structure, and before advising a designer of any level."
 ---
 
 # Design Systems Playbook
 
 ## Work in three phases. Do not skip phase 1.
+
+**Auditing an existing system rather than building one?** Go straight to
+`references/audit.md`. It has its own intake, a reduced discovery scope, and a report
+template. An audit is a valid terminal deliverable, not a prelude to a rebuild.
 
 ```
 1. DISCOVER  ->  establish context you cannot observe      references/discovery.md
@@ -34,9 +38,9 @@ The artifact set, in build order:
 
 | Phase | Artifacts | Done when |
 |---|---|---|
-| **Discovery** | Written context summary, corrected by the user. Visual philosophy in 3-5 falsifiable sentences. Stated assumptions. | The user has corrected at least one line of it |
+| **Discovery** | Written context summary, corrected by the user. Visual philosophy in 3-5 falsifiable sentences. Stated assumptions. | The user has confirmed or corrected it, explicitly |
 | **Foundations** | `tokens.json` (DTCG). A **deterministic build script** compiling it to CSS custom properties and any platform outputs. Color ramps, type roles, spacing, radius, motion, elevation. Contrast audit across every token pairing in every theme. | Contrast audit passes; no component references a raw value |
-| **Preview** | **One self-contained HTML file with the COMPLETE inventory**, sectioned by atomic layer, fully interactive, motion running, every variant and state, theme toggle, real content, the company logo, plus 2-3 composed screens. | Every component that will exist is visible and judgeable |
+| **Preview** | **One self-contained HTML file with the COMPLETE inventory**, sectioned by atomic layer, fully interactive, motion running, every variant and state, theme toggle, real content, the company logo, plus one composed screen as a sanity check. | Every component that will exist is visible and judgeable |
 | **Approval** | An explicit yes on look, feel, motion, and completeness. | Recorded. **React work does not start before this.** |
 | **Components** | React components on headless primitives, uniform file shape per component, every interaction state, `registry.json` allowlist. | A screen can be built from them without inventing anything |
 | **Storybook** (`handoff.md`) | A story file per component: CSF3, `autodocs`, `argTypes` with controls on every prop, one story per variant and per state, `play` functions for interactions, theme switcher, a11y passing. Published to a URL. | Every component is explorable and interactive by someone who did not build it |
@@ -75,13 +79,14 @@ for components that do not exist.
 | `references/preview.md` | Two-gate flow: base-system preview, then page templates, and the approval questions |
 | `references/handoff.md` | Storybook definition of done, `PROGRESS.md`, the generated skill file |
 | `references/marketing-surfaces.md` | Landing pages, the brand/product seam, marketing components and token extensions |
+| `references/audit.md` | **Auditing an existing system.** Intake (ask for the repo), procedure, report template, migration |
 | `references/evaluation.md` | Whether the system works, and whether it is sufficient |
 
 Read the file for the decision in front of you. Do not preload all of them.
 
 ---
 
-## Five rules that override everything below
+## Seven rules that override everything below
 
 **1. A design system is downstream of the product.** Never start from another system's
 component list. Start with an inventory of real screens. Copy architecture, not catalogs.
@@ -166,7 +171,7 @@ components that consumed primitives means re-touching every state.
 | Question | Default |
 |---|---|
 | How many token tiers? | Three in the data model. Expose only two to designers. |
-| How many tokens? | ~40-80 primitive, ~60-120 semantic. Multi-brand grows the primitive layer, not the semantic one. |
+| How many tokens? | See `color.md`, the single source for palette sizing. Multi-brand grows the primitive layer, not the semantic one. |
 | Dark mode now or later? | Semantic layer designed for it now. Author values whenever. |
 | Dark base color? | Dark grey (`#121212` class), not pure black. True black only for a stated OLED need. |
 | How many hues? | **Decide hues, then take the whole ramp for each.** Brand, neutral, and 3-4 status hues. ~60-85 primitives, not 144. `color.md` |
