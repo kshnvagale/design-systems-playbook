@@ -333,8 +333,9 @@ the primitive tier specifically.
 
 Before the ranked list, the actual numbers behind why prose loses, from a January 2026
 internal research document by a Meta team building a component system specifically for
-AI-generated code (`facebook/astryx`, explicitly framed as an exploration, not a finished
-product):
+AI-generated code (`facebook/astryx`, which that document, written months before the
+public beta shipped in mid-2026, explicitly framed as an exploration rather than a
+finished product):
 
 | Strategy | Enforcement level | Reliability |
 |---|---|---|

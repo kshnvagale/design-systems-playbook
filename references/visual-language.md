@@ -138,7 +138,7 @@ bounding-box size do not read as the same weight. Adjust so they look equal, whi
 they will not measure equal.
 
 **Sizes.** Two or three, tied to type roles so an icon beside a label matches its cap
-height. `icon.sm` next to `type.body`, `icon.md` next to `type.title`.
+height. Two steps, `icon.{sm,md}`, pinned to `type.body` and `type.title` respectively.
 
 ### Icon usage rules worth writing down
 

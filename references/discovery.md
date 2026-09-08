@@ -136,9 +136,12 @@ The standard resolution when it fails, which you should offer in the same breath
 does not read as a rejection of their brand:
 
 - Keep the literal brand hue for large fills, logos, illustration, and marketing surfaces.
-- Derive a darker, higher-chroma step from the same hue family as the accessible
-  interactive color for text, icons, and links.
-- Both live in the same ramp, so it still reads as one brand.
+- Derive the accessible interactive color for text, icons, and links from the same hue
+  family. It is a darker step, and for blues and greens usually a more saturated one, but
+  for yellows and limes the accessible step is lower in chroma, not higher.
+- Both steps live in the same ramp, so the pair is one defensible brand decision. Do not
+  promise more than that: `#FFD500` sits at 1.42:1 on white and first clears 4.5:1 around
+  `#8C7500`, a dark olive, which no stakeholder will read as their bright yellow.
 
 Bright yellows, limes, oranges, and mid-greens fail this constantly. Assume you will need
 this conversation and prepare it rather than discovering it late.

@@ -9,12 +9,19 @@ foundations + tokens
   -> ASK: do you want page templates? which ones? collect input
   -> PREVIEW 2: page templates, built only from approved components
   -> APPROVAL GATE 2: are the templates right?
+  -> ASK: are marketing surfaces in scope? (see section 3b)
+  -> PREVIEW 3: marketing surfaces, only if they are in scope
+  -> APPROVAL GATE 3: are the surfaces right?
   -> foundation choice -> React -> Storybook -> generated skill file
 ```
 
-**Two gates, not one.** Page templates are a separate concern from the system itself. A
-team that ran this with a single gate got templates built in the same pass as the system,
-before anyone had said which pages they wanted or supplied a single screenshot.
+**Two gates for the product system, plus a third only if marketing surfaces are in
+scope.** Page templates are a separate concern from the system itself. A team that ran
+this with a single gate got templates built in the same pass as the system, before anyone
+had said which pages they wanted or supplied a single screenshot. Marketing surfaces are a
+third concern again, with their own preview and their own gate when they are in scope, and
+skipped entirely when they are not. See `marketing-surfaces.md` for what preview 3
+contains, and section 3b below for the question that decides whether it happens.
 
 **The HTML comes before React, and it contains everything.** Two separate reasons, and
 both matter:
@@ -298,21 +305,16 @@ work as plain DOM and CSS before a framework abstraction hides a problem.
 The list above is a **review instrument**, not a build order. `components.md` is the single
 source and explains the review procedure. It is derived from two sources:
 
-**Meta's Astryx** ([astryx.atmeta.com/components](https://astryx.atmeta.com/components)),
-a real shipping system with 150+ components (the public components index lists a browsable subset) across Action, Chat, Container, Content,
-Data Input, Feedback and Status, Layout, Navigation, Overlay, Table and List, and Utility.
+**Meta's Astryx** and **component prevalence data** across published systems. `components.md`
+carries both, including Astryx's category list and the two transferable lessons about how it
+is organized. Do not restate them here; this file only needs the consequence.
 
-**Component prevalence data** across published systems (see `components.md`).
-
-Two things worth noticing about Astryx:
-
-- It categorizes by **function** (Action, Overlay, Data Input) while atomic layers organize
-  by **composition**. Both are valid and they are not in conflict. Use functional grouping
-  for browsing and docs, atomic layers for build order and dependency direction.
-- It ships an entire **Chat cluster** (Chat Composer, Chat Message, Chat Tool Calls,
-  Chat System Message) because Meta builds AI products. That is direct evidence for
-  inventory-driven building: review the canonical list item by item, record a reason for anything you exclude, and add
-domain components on top of whatever you include. A payments company ships an `Amount`; a health product ships a vitals display.
+The consequence for the preview: functional grouping is for browsing and docs, atomic layers
+are for build order and dependency direction, and the preview sections use the atomic layers.
+Astryx's own inventory is also the clearest evidence for inventory-driven building, since it
+ships a whole Chat cluster because Meta builds AI products. Review the canonical list item by
+item, record a reason for anything you exclude, and add domain components on top of whatever
+you include. A payments company ships an `Amount`; a health product ships a vitals display.
 
 Add what your interface inventory found. **Subtracting is allowed and often correct** -
 review the list item by item and record one line for anything you exclude. See
@@ -395,7 +397,8 @@ have real consequences.
 >
 > **1. Do you want marketing surfaces too** (landing page, pricing, blog index), or is
 > this product only? Marketing needs an extended type and spacing scale and its own
-> component set, so it changes what I build.
+> component set, so it changes what I build, and a yes adds a third preview and a third
+> gate before I am done.
 >
 > **2. What should I build the components on?** Three options, and I would recommend
 > [X] for you because [reason from discovery]. Here are the tradeoffs.
@@ -480,8 +483,8 @@ MIT, currently in beta).
 - **Install:** `@astryxdesign/core`, a theme such as `@astryxdesign/theme-neutral`, plus
   `@stylexjs/stylex`. CLI is `@astryxdesign/cli`.
 - **Theming is CSS custom property overrides**, so you can make it unmistakably yours
-  without forking or wrapping component source. Seven themes ship with it (neutral, butter,
-  chocolate, matcha, stone, gothic, y2k).
+  without forking or wrapping component source. Ten themes ship with it (default, neutral,
+  daily, butter, chocolate, matcha, stone, gothic, brutalist, y2k).
 - **`swizzle` ejects a component's full source** into your project when you need to own it,
   so adopting is not a one-way door.
 - Explicitly designed so people and AI assistants build the same way from the same

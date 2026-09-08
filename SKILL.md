@@ -123,7 +123,14 @@ implementation detail, and quality degrades on the later components because the 
 full by then. Announce the plan before dispatching. The orchestrator keeps the user
 conversation, the token source, the registry, naming, and every decision. Subagents get
 **exclusive file ownership, the spec inline, and an explicit return format.** Verify the
-artifacts on return, never the self-report. `orchestration.md`
+artifacts on return, never the self-report.
+
+**The one thing this rule does not license: spending the user's money without asking.**
+Covering the whole canonical inventory runs roughly 60-75 dispatches, and a lean included
+set far fewer, but either way it is a real cost. If subagents are unavailable or the user
+has not opted in, say so and build serially in checkpointed batches of 3-5 instead of
+silently burning budget. Delegation is the default execution mode, not a standing
+authorisation. `orchestration.md`
 
 **7. Lead with design, land in code.** A system built only from architecture and
 enforcement will be correct and generic. Decide the visual language deliberately
@@ -155,7 +162,9 @@ fields" passes.
    references, real content. The answer may be no. Then **HTML preview 2** and
    **approval gate 2**. A template may never introduce a new component. `preview.md`
 7b. **After gate 2, ask two things before any React:** are marketing surfaces in scope
-   (`marketing-surfaces.md`), and which foundation to build on. Then proceed.
+   (`marketing-surfaces.md`), and which foundation to build on. If marketing is in scope,
+   it gets **HTML preview 3 and approval gate 3** of its own, on the extended scales.
+   Two gates cover the product system; marketing is a third. Then proceed.
 8. **Choose the foundation**, then build React components. Put three options to the user:
    from scratch on headless primitives, adopt and theme Astryx, or build on shadcn/ui.
    Only after the preview is approved. `preview.md`, `components.md`,
@@ -212,7 +221,7 @@ this table, apply that test to the row you touched.
 | Marketing site in scope? | Ask in discovery. Shared primitives, **extended** type and spacing scales, separate component set. `marketing-surfaces.md` |
 | Product type scale for a landing page? | **No.** Product tops out ~40px; marketing needs display roles above that. Extend the scale, never fork it. |
 | Build page templates? | **Ask after gate 1.** Collect page list, screenshots, real content. The answer may be no. |
-| What comes after gate 2? | **Ask two things:** marketing surfaces in scope, and which foundation to build on. Then React. |
+| What comes after gate 2? | **Ask two things:** marketing surfaces in scope, and which foundation to build on. Marketing in scope adds a third preview and gate. `marketing-surfaces.md`, `preview.md` |
 | Track progress how? | `PROGRESS.md` with a checkbox per inventory item. **Orchestrator ticks it, subagents never write to it.** |
 | When do marketing tokens get built? | **With the primitives, in the token phase.** Marketing *components* come later, after the product system is approved. |
 | Marketing components merged with product? | **No.** Separate package importing a shared core. One Button, one icon set, separate organisms. |

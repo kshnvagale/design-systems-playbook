@@ -15,7 +15,7 @@ so cost scales with what you actually use:
 | Level | Loads | Cost |
 |---|---|---|
 | Metadata (name, description) | Always, in the system prompt | ~120 tokens |
-| `SKILL.md` | When the request matches | ~5,800 tokens |
+| `SKILL.md` | When the request matches | ~6,000 tokens |
 | A reference file | Only when routed to and read | 0 until opened |
 
 A typical task lands around 9-13k tokens. All 15 files at once is ~78k, which only happens

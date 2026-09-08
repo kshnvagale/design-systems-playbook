@@ -14,14 +14,17 @@ Building serially in one session is a failure mode, not a safe conservative choi
 - **Quality degrades on the later components**, because by the time you reach component 40
   the context is full of the previous 39 and attention to the spec has decayed.
 
-A full inventory build is roughly 70 components. That is not a serial job.
+The build is whatever your inventory review included, not the full canonical list
+(`components.md`, which is a review instrument rather than a build order). Even a lean
+included set runs past a dozen components, and that is not a serial job.
 
 **If subagents are unavailable, or the user has not opted into the cost**, do not pretend
 otherwise and do not silently burn budget. Say so, then build serially in **checkpointed
 batches of 3-5 components**, updating `PROGRESS.md` after each batch so the work survives a
 context reset. That is slower and quality still degrades on later batches, but it is honest
-and resumable. A full build is roughly 60-75 dispatches; that is a real cost and the user
-should agree to it before you start.
+and resumable. Quote the cost as an upper bound: a build covering the whole canonical
+inventory runs roughly 60-75 dispatches, and a lean included set far fewer. Either way it
+is a real cost and the user should agree to it before you start.
 
 **Announce the plan before dispatching.** Tell the user which agents you are creating, what
 each one owns, and what comes back. Then dispatch.
@@ -66,10 +69,10 @@ components.
 
 | Agent | Owns exclusively | Returns |
 |---|---|---|
-| 1 | `ui/{button,icon-button,link,text,heading,icon}/` four-file shape | file paths, gaps hit |
-| 2 | `ui/{badge,status-dot,avatar,divider,spinner,skeleton}/` four-file shape | same |
-| 3 | `ui/{checkbox,radio,switch,toggle-button,slider,progress-bar}/` four-file shape | same |
-| 4 | `ui/{text-input,text-area,number-input,select,field}/` four-file shape | same |
+| 1 | `ui/{button,icon-button,link,text,heading,icon}/` five-file shape | file paths, gaps hit |
+| 2 | `ui/{badge,status-dot,avatar,divider,spinner,skeleton}/` five-file shape | same |
+| 3 | `ui/{checkbox,radio,switch,toggle-button,slider,progress-bar}/` five-file shape | same |
+| 4 | `ui/{text-input,text-area,number-input,select,field}/` five-file shape | same |
 | **Orchestrator** | `tokens.json`, `registry.json`, the preview, all naming, reconciliation | - |
 
 Note what the orchestrator kept: every shared, single-writer artifact. Note what the agents
@@ -78,9 +81,11 @@ got: disjoint file sets that can fail and be retried independently.
 Then the next batch does molecules, the next does organisms. Layer order matters, because
 molecules import atoms and organisms import both.
 
-A full canonical inventory (24 atoms, 27 molecules, 16 organisms, 6 layout primitives) is
-roughly **4 batches of 4-5 agents, each agent owning 5-6 components**. Plan for that shape
-rather than discovering it at component 12.
+Scale the batch plan to what your inventory review **included**, not to the full canonical
+list: the 73 items are a review instrument, not a build order (`components.md`). The shape
+that works is **4-5 agents per batch, each agent owning 5-6 components**, so one batch
+clears roughly 25 components and you divide your included count by that. Plan for that
+shape rather than discovering it at component 12.
 
 
 **The orchestrator owns the user relationship, every shared artifact, and every decision.

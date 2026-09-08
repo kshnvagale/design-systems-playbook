@@ -171,12 +171,13 @@ restating it, so the list cannot drift.
 
 Derived from prevalence data above plus **Meta's Astryx**
 ([astryx.atmeta.com/components](https://astryx.atmeta.com/components)), a real shipping
-system with 150+ components (the public components index lists a browsable subset) across Action, Chat, Container, Content, Data Input,
-Feedback and Status, Layout, Navigation, Overlay, Table and List, and Utility.
+system, now in public beta, with 150+ components (the public components index lists a
+browsable subset) across Action, Chat, Container, Content, Form Controls, Feedback and
+Status, Layout, Navigation, Overlay, Table and List, and Utility.
 
 Two transferable lessons from how Astryx is organized:
 
-**It categorizes by function, not composition.** Action, Overlay, Data Input, Navigation.
+**It categorizes by function, not composition.** Action, Overlay, Form Controls, Navigation.
 Atomic layers organize by composition instead. These are not in conflict and you want both:
 functional grouping for browsing and documentation, atomic layers for build order and
 dependency direction. Same components, two indexes.
@@ -208,8 +209,10 @@ consumer. See `naming.md`, especially the ARIA-alignment rules for the contested
 
 ## A defensible build order
 
-**Every name below resolves to an entry in the canonical inventory above.** If you add a
-tier entry, add the component to the inventory first. Names follow `naming.md`: no slashes.
+**Every name below resolves to an entry in the canonical inventory above, except the two
+marked *(not in the inventory)*, which are named only because they are the classic time
+sinks teams propose early.** If you add a tier entry, add the component to the inventory
+first. Names follow `naming.md`.
 
 **Tier 1 (build first, roughly 12-16 components).** High-frequency, low-ambiguity, and
 each has a matching WAI-ARIA APG pattern to build against rather than improvising:
@@ -217,18 +220,17 @@ Button, Text input, Checkbox, Radio, Select, **Badge**, Card, Dialog,
 Tabs, Tooltip, **Alert**, Link, Spinner, Icon Button, Divider, Avatar.
 
 **Tier 2 (once tier 1 is stable and actually adopted).** Mostly compositions of tier-1
-primitives: **Accordion**, Table (basic, sortable), Pagination, Breadcrumbs, Dropdown
-Menu, Toast, Switch, Progress bar, Skeleton, Empty state, Banner, Textarea, Form
-field wrapper (label + input + error + helper text composed as one unit), Segmented
-control, Popover, Drawer.
+primitives: **Accordion**, Table (basic, sortable), Pagination, Breadcrumbs, Menu,
+Toast, Switch, Progress bar, Skeleton, Empty state, Banner, Textarea, Field (label +
+input + help + error composed as one unit), Segmented control, Popover, Side Drawer.
 
 **Tier 3 (defer until real, repeated, cross-team demand exists).** The classic
 time-sinks: **Data Table** (sorting, filtering, column resize, bulk selection,
 virtualization), **Date Picker** (calendar math, ranges, timezones), **Combobox /
 Autocomplete** (async search, keyboard nav, screen-reader announcements), **Rich Text
-Editor**, **Charts / data-viz**, **File Upload** (drag-drop, progress, chunking,
-validation). Each can consume a person-month or more and each has deep, non-obvious
-accessibility requirements.
+Editor** *(not in the inventory)*, **Charts / data-viz** *(not in the inventory)*,
+**File Upload** (drag-drop, progress, chunking, validation). Each can consume a
+person-month or more and each has deep, non-obvious accessibility requirements.
 
 **Do not let a junior team build tier 3 from scratch as their first design-system work.**
 This is precisely where headless primitive libraries earn their cost.
