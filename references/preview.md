@@ -109,7 +109,7 @@ nobody discovers a missing Tab Group three weeks later.
 ### Layout: fixed left nav, scrolling right pane
 
 **Do not build this as one long scrolling column.** A complete inventory is roughly 73
-components plus foundations plus composed pages, which lands somewhere around 60,000px of
+components plus foundations plus one composed screen, which lands somewhere around 60,000px of
 vertical scroll. At that length the only way to find anything is to scroll past everything
 else, and a reviewer cannot tell what exists without seeing all of it.
 
@@ -146,7 +146,7 @@ Use a two-pane docs shell:
 
 - Scrolls independently of the nav.
 - **Constrain content width** (roughly 1100-1200px) rather than letting it stretch to the
-  viewport. Full-bleed only for layout primitives and composed pages, where the width is
+  viewport. Full-bleed only for layout primitives and the composed screen, where the width is
   the point.
 - One component per block, each block visually separated as its own panel or card with a
   heading, not run together.
@@ -194,7 +194,7 @@ state name. An unlabeled grid of buttons is decoration; a labeled one is documen
 
 ### Build it with a fan-out, not serially
 
-This file holds ~73 components plus foundations plus composed pages. That is far too much
+This file holds ~73 components plus foundations plus one composed screen. That is far too much
 for one agent in one pass, and quality visibly degrades toward the end of a long serial
 build. **Dispatch subagents.** The mechanics, because a single file cannot use normal
 exclusive-file ownership:
@@ -218,7 +218,7 @@ A workable split:
 | 4 | Molecules A-M |
 | 5 | Molecules N-Z |
 | 6 | Organisms |
-| 7 | Layout primitives and composed pages |
+| 7 | Layout primitives and the one composed screen |
 | **Orchestrator** | Shell, stitch, verification |
 
 **Every agent gets the same inline spec**: the exact token names available (they may not

@@ -52,7 +52,7 @@ components.
 | 4 | Molecules A-M |
 | 5 | Molecules N-Z |
 | 6 | Organisms |
-| 7 | Layout primitives and composed pages |
+| 7 | Layout primitives and the one composed screen |
 | **Orchestrator** | The shell, the stitch, verification |
 
 **React component batch** (after approval). Copy the shape.
@@ -120,7 +120,7 @@ Rule of thumb: **if two agents could write the same file, only the orchestrator 
 ## Fanning out a single large file
 
 The HTML preview is one file containing roughly 73 components plus foundations plus
-composed pages. Too large for one agent, and quality visibly degrades toward the end of a
+one composed screen. Too large for one agent, and quality visibly degrades toward the end of a
 long serial build. But it is one file, so the usual exclusive-file-ownership rule cannot
 apply directly.
 

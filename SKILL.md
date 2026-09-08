@@ -52,8 +52,12 @@ The artifact set, in build order:
 
 **Definition of done for v1:** someone who was not involved in building it can produce a
 new screen entirely from the system, CI blocks a raw hex, the held-out test scores above
-90% component reuse with zero invented components, and coverage is being measured in
-production.
+90% component reuse with zero invented components, and **coverage instrumentation is wired
+and returning a number on a test page.**
+
+Coverage *in production* is a post-launch milestone, not a v1 gate. A greenfield system has
+no production consumers on day one, so requiring it would make v1 unreachable. What you can
+require at v1 is that the measurement works.
 
 **Scope honestly.** If the user asked for a plan, deliver phases 1-2 plus a roadmap and
 say so. If they asked for a design system, the default is the full set. Never let the
@@ -134,8 +138,8 @@ fields" passes.
    icon grid and stroke, motion intent, voice. Do this *with* tokens, not after.
 4. **Semantic tokens first, then generate only the primitives they point at.** Light mode
    first. ~60-85 primitives, ~60-120 semantic. **Read `color.md` before generating any
-   ramp**, and count your primitives out loud before building. Over ~50 for a
-   single-brand product means something is speculative.
+   ramp**, and count your primitives out loud before building. Past the top of that
+   range, check that every hue has a named job.
 5. **Lock naming.** Renaming after adoption is a breaking change.
 6. **Dark mode as a second authored value set**, never an inversion. Needed before the
    preview, because the preview must ship a working theme toggle.
