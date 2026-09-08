@@ -22,7 +22,8 @@ everything, so a typical task loads the map plus one or two references.
 3. BUILD      references/orchestration.md      fan out to subagents, verify on return
               references/build-architecture.md file shape, layer boundaries, verify gate
               references/ai-agents.md          agent-consumable delivery and enforcement
-4. DELIVER    references/delivery.md           HTML preview, approval, Storybook, skill file
+4. DELIVER    references/preview.md           HTML previews, the two approval gates
+              references/handoff.md           Storybook, PROGRESS.md, generated skill file
 5. GOVERN     references/governance.md         team models, adoption, why systems die
 6. VERIFY     references/evaluation.md         does it work, and is it sufficient
 ```

@@ -94,7 +94,7 @@ Subagents own bounded, non-overlapping implementation work and report back.**
 - **Reconciliation.** When returns conflict, the orchestrator resolves.
 - **`PROGRESS.md`.** One file every agent in a batch would otherwise touch at once.
   Concurrent read-modify-write on markdown loses updates silently. Agents report, the
-  orchestrator ticks. See `delivery.md`.
+  orchestrator ticks. See `handoff.md`.
 
 Rule of thumb: **if two agents could write the same file, only the orchestrator writes it.**
 
@@ -149,7 +149,7 @@ which must be zero outside the shell.
 Sequence it as **shell, then one reference section you build yourself, then fan out.**
 Models weight a nearby concrete example far above stated instructions, and building one
 section first also proves the shell is sufficient before seven agents discover it is not.
-See `delivery.md`.
+See `preview.md`.
 
 The same pattern generalizes to any large single artifact: a docs page, a long spec, a
 generated index. Own the skeleton centrally, fan out the contents, stitch centrally.
