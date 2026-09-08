@@ -305,7 +305,23 @@ rebuilding its v2 architecture specifically for this reason:
 Concretely: v1 had ~500 custom CSS variables in a Fluent-UI-inspired scheme
 (`neutral-background-1-rest`, `brand-foreground-2-hover`). v2 builds on shadcn's default
 token names (`--primary`, `--secondary`, `--muted`) and layers custom identity on top as
-a *style*, not a competing naming scheme. This is a direct, evidenced update to the
+a *style*, not a competing naming scheme.
+
+**One precision worth keeping straight, because the two alignments are different
+arguments.** shadcn's `--primary`, `--secondary`, `--muted` are **semantic** role names, not
+primitives. `naming.md` is explicit that a descriptive value name like `blue-500` belongs at
+the primitive tier and a semantic token must never encode a value, so these cannot be cited
+as primitive-tier alignment.
+
+- **Primitive-tier alignment** means matching the scale a model has memorized: Tailwind's
+  `blue-500`, `p-4`, `rounded-lg`. That is where the training-data prior actually bites,
+  because a model emits those class names by reflex.
+- **Semantic-tier alignment** means matching shadcn's role vocabulary (`--primary`,
+  `--muted`, `--destructive`). That is a separate and also defensible choice, but it is a
+  question about your semantic layer, not about fighting a tokenizer prior.
+
+Decide them independently. Aligning primitives to Tailwind while naming semantics for your
+own domain is a common and coherent combination. This is a direct, evidenced update to the
 naming guidance elsewhere in this skill: **for a from-scratch system in 2026, aligning
 primitive-tier naming to Tailwind/shadcn conventions is a legitimate default reason to
 choose descriptive-primitive names over a fully custom scheme**, specifically because it

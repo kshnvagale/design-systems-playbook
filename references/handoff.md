@@ -195,7 +195,36 @@ Same always-on plus on-demand split used everywhere else in this skill:
 - **On-demand**: Storybook for detail. Its `index.json` enumerates every story and autodocs
   metadata carries prop types. Point a Storybook MCP server or fetch tool at that.
 
-Keep the skill file small enough to always load. Push everything else behind the fetch.
+### Size budget, and what "thin" actually means
+
+`ai-agents.md` warns that a rules file which outgrows what a model reliably attends to is
+worse than none. That is correct, and it is not in conflict with shipping the allowlist
+inline, but the line between them has to be stated or the two rules read as contradictory.
+
+**The split is names inline, detail fetched.**
+
+| Inline in the always-on file | Fetched on demand |
+|---|---|
+| Component names and import paths | Full prop APIs and types |
+| Variant names per component | Per-variant behavior and edge cases |
+| Semantic token names by group | Token values and the primitive chain |
+| The scales (spacing, radius, type roles) | Usage examples and compositions |
+| Visual philosophy, judgment calls, traps | Anything a model can look up once it knows the name exists |
+
+The reasoning: **a model cannot fetch what it does not know exists.** If the allowlist is
+behind a tool call, the agent has to already suspect a component is there before it asks,
+and when it does not suspect, it invents. Names are cheap and they are the thing that
+prevents invention. APIs are expensive and only needed once a name is chosen.
+
+**Budget: keep the always-on file under roughly 5,000 tokens.** For a 73-component system
+that is achievable: names and paths run about 1,500 tokens, semantic token names about 800,
+scales about 300, philosophy and judgment about 1,000. If you are over budget, cut prose
+and examples first, never the allowlist.
+
+If your system is large enough that the names alone blow the budget, that is a signal to
+split the registry by layer and load the relevant one, not to move names behind a fetch.
+
+Push everything else behind the fetch.
 
 ### Also ship it as `AGENTS.md`
 
