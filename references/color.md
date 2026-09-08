@@ -121,7 +121,9 @@ info         12 steps   full ramp
 ```
 
 Around **72** for a typical single-brand product. Drop to three status hues and it is 60;
-add a defined accent and it is 84. **60-85 is the honest range.** Compare a twelve-hue
+add a defined accent and it is 84. **60-85 colour primitives is the honest range.** This is a colour-only number. Non-colour
+primitives (spacing, radius, border width, elevation, z-index, breakpoints, opacity,
+motion) are budgeted separately in `tokens.md` and add roughly 40-60 more. Compare a twelve-hue
 matrix at 144, which is roughly double for hues nobody named a job for.
 
 The saving does not come from shortening ramps. It comes from not generating the six to

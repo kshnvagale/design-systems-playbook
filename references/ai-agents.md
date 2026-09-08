@@ -353,11 +353,14 @@ document worth carrying:
   status." Their conclusion, stated as a resolved open question: **types beat comments,
   because types are enforced and docs are ignored.** If you are tempted to document a
   constraint in a comment, encode it in the type instead.
-- **The strongest single number in favor of typed APIs:** type-constrained code
-  generation **reduces LLM code generation errors by more than 50%**
-  ([arxiv.org/abs/2504.09246](https://arxiv.org/abs/2504.09246)). This is the clearest
-  published justification for spending design-system effort on making invalid states
-  unrepresentable in the type system rather than on writing more guidance.
+- **A number often cited here, stated precisely.** Type-constrained *decoding* roughly
+  halves **compilation** errors ([arxiv.org/abs/2504.09246](https://arxiv.org/abs/2504.09246)).
+  Two caveats that matter: the effect is on code that compiles, not code that is correct
+  (functional correctness moves only a few percent), and the paper studies constrained
+  decoding, not user-authored component API types. **Applying it to discriminated-union
+  component props is reasoned inference, not a published finding.** The inference is
+  reasonable - a type error is a fast, mechanical signal an agent's own loop repairs - but
+  label it as inference, per the standard this file applies elsewhere.
 
 Also from the same source, on the failure mode this whole file exists to prevent:
 AI "optimizes for local correctness, not systemic soundness," generating arbitrary
@@ -380,7 +383,10 @@ Consolidating both research passes into one ranked list. Prose instructions are 
 weakest gate and should never be the only one:
 
 1. **Making the violation impossible to compile.** Tailwind v4's `@theme` with
-   `--spacing: initial` means an off-scale utility like `p-5` generates no CSS at all.
+   `--spacing: initial` **removes the entire numeric spacing scale**, because v4 computes
+   `p-<n>` as `calc(var(--spacing) * <n>)`. That kills `p-4` along with `p-5`. The recipe is
+   therefore two steps: set `--spacing: initial`, then define every allowed step explicitly
+   (`--spacing-4: 1rem`, `--spacing-8: 2rem`). Only the steps you declare will compile.
    Stronger than lint because there is no way to accidentally ship it; it does not exist.
 2. **Lint rules that fail CI.** `no-restricted-imports` for deprecated/non-registry
    components as a hard error. Real, shipping examples:

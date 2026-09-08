@@ -56,7 +56,7 @@ Template:
 - background: action.primary.rest / .hover / .pressed
 - text:       content.on-primary
 - padding:    space.12 / space.16
-- radius:     radius.full
+- radius:     radius.<your action radius>
 
 ## States (all required)
 rest · hover · pressed · focus-visible · disabled · loading
@@ -64,7 +64,9 @@ rest · hover · pressed · focus-visible · disabled · loading
 ## Accessibility
 - Focus ring always visible, never removed.
 - Disabled uses aria-disabled, state never by color alone.
-- Target minimum 44x44.
+- Target minimum 44x44. **This is deliberately above WCAG 2.2 AA** (SC 2.5.8 requires
+  24x24); 44x44 matches common mobile guidance. Lower it to 24x24 only as a documented
+  decision.
 ```
 
 Keep specs short. A spec nobody reads because it is three pages long is worse than a

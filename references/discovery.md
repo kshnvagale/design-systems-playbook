@@ -441,7 +441,7 @@ Do not block on discovery. State the assumption and proceed.
 | Stack | React plus Tailwind, headless primitives underneath |
 | Who writes code | Both humans and agents |
 | Maintainers | One to two people, part-time, until proven otherwise |
-| Token count target | 60-85 primitives, 60-120 semantic (`color.md`) |
+| Token count target | 60-85 colour primitives (`color.md`) plus non-colour scales (`tokens.md`); 60-120 semantic |
 | Visual direction | Restrained, border-separated, medium density. State this and ask for a reference to correct it. |
 | Brand color role | Interactive only, never decorative fill |
 | Typeface | System stack or a well-supported open-source face until told otherwise |
@@ -500,8 +500,8 @@ Before proceeding, write back a short statement the user can correct in one pass
 9. **Brand assets received or missing**, logo explicitly, with any dark-background gap flagged
 10. **Component-level styling references received or missing**, and what you extracted from
     them (radius language, control sizing, border vs shadow, focus treatment)
-10. Explicit assumptions you made for anything unanswered
-11. What you are going to do first, and what you are deliberately not doing yet
+11. Explicit assumptions you made for anything unanswered
+12. What you are going to do first, and what you are deliberately not doing yet
 
 If they gave you references, say what you extracted ("soft 12px radii, generous
 whitespace, borders rather than shadows, cool neutrals"). That is the fastest way to find

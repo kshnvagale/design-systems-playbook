@@ -295,7 +295,8 @@ work as plain DOM and CSS before a framework abstraction hides a problem.
 
 ## 2. Where the inventory comes from
 
-The list above is a **floor, not a ceiling.** It is derived from two sources:
+The list above is a **review instrument**, not a build order. `components.md` is the single
+source and explains the review procedure. It is derived from two sources:
 
 **Meta's Astryx** ([astryx.atmeta.com/components](https://astryx.atmeta.com/components)),
 a real shipping system with 150+ components (the public components index lists a browsable subset) across Action, Chat, Container, Content,
@@ -310,8 +311,8 @@ Two things worth noticing about Astryx:
   for browsing and docs, atomic layers for build order and dependency direction.
 - It ships an entire **Chat cluster** (Chat Composer, Chat Message, Chat Tool Calls,
   Chat System Message) because Meta builds AI products. That is direct evidence for
-  inventory-driven building: the canonical list is the minimum, and domain components go on
-  top of it. A payments company ships an `Amount`; a health product ships a vitals display.
+  inventory-driven building: review the canonical list item by item, record a reason for anything you exclude, and add
+domain components on top of whatever you include. A payments company ships an `Amount`; a health product ships a vitals display.
 
 Add what your interface inventory found. **Subtracting is allowed and often correct** -
 review the list item by item and record one line for anything you exclude. See

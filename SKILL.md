@@ -7,6 +7,10 @@ description: "Use when starting, planning, auditing, or reviewing a design syste
 
 ## Work in three phases. Do not skip phase 1.
 
+**Answering one bounded question** ("how should I structure dark-mode tokens?")? Read the
+one relevant reference, answer it, state your assumptions, and stop. Do not run discovery
+and do not propose a build. The routing table below is the index.
+
 **Auditing an existing system rather than building one?** Go straight to
 `references/audit.md`. It has its own intake, a reduced discovery scope, and a report
 template. An audit is a valid terminal deliverable, not a prelude to a rebuild.
@@ -23,7 +27,7 @@ cross-platform, or regulated is a guess wearing the costume of expertise.
 
 If the user has not given you that context, ask. One batch of questions, with your
 proposed defaults attached so they can reply "defaults are fine." `discovery.md` has the
-eight questions that actually change the architecture, the defaults to assume when you
+eight architecture questions plus a visual-direction set, roughly 18 in one batch, the defaults to assume when you
 get no answer, and the things you should decide yourself rather than ask about.
 
 ---
@@ -137,9 +141,9 @@ fields" passes.
 3. **Visual language.** Type roles and scale, grid and breakpoints, density per surface,
    icon grid and stroke, motion intent, voice. Do this *with* tokens, not after.
 4. **Semantic tokens first, then generate only the primitives they point at.** Light mode
-   first. ~60-85 primitives, ~60-120 semantic. **Read `color.md` before generating any
-   ramp**, and count your primitives out loud before building. Past the top of that
-   range, check that every hue has a named job.
+   first. **Read `color.md` before generating any ramp.** It is the single source for
+   palette sizing: 60-85 *colour* primitives, plus non-colour scales budgeted separately in
+   `tokens.md`. Count hues, not total primitives.
 5. **Lock naming.** Renaming after adoption is a breaking change.
 6. **Dark mode as a second authored value set**, never an inversion. Needed before the
    preview, because the preview must ship a working theme toggle.
@@ -172,19 +176,32 @@ components that consumed primitives means re-touching every state.
 
 ## Fast decision table
 
+**A rule this table must follow, because breaking it has caused five real failures.**
+`SKILL.md` is the only file guaranteed to load. Every row here that *abbreviates* a rule
+living in a reference file can silently override that reference, because the reference may
+never open. So:
+
+> **Can this row ever disagree with its reference file? If yes, point at the file instead of
+> restating it. If no, state it.**
+
+Self-contained decisions (Dialog not Modal, no hand-rolled Combobox) are safe to state:
+nothing elsewhere can contradict them. Counts, inventories, budgets, and anything with a
+derivation belong to their reference file and appear here as a pointer only. When you edit
+this table, apply that test to the row you touched.
+
 | Question | Default |
 |---|---|
 | How many token tiers? | Three in the data model. Expose only two to designers. |
 | How many tokens? | See `color.md`, the single source for palette sizing. Multi-brand grows the primitive layer, not the semantic one. |
 | Dark mode now or later? | Semantic layer designed for it now. Author values whenever. |
 | Dark base color? | Dark grey (`#121212` class), not pure black. True black only for a stated OLED need. |
-| How many hues? | **Decide hues, then take the whole ramp for each.** Brand, neutral, and 3-4 status hues. ~60-85 primitives, not 144. `color.md` |
+| How many hues? | **Decide hues, then take the whole ramp for each.** Brand, neutral, 3-4 status. Counts live in `color.md`; do not restate them here. |
 | Ramp depth? | **Full 12 steps** for any hue that earns a ramp. Truncating means a missing state gets improvised. Radix's step map says what each is for. |
 | Color space? | OKLCH/LCH/HCT. Never build a ramp by eye in HSL. |
 | How many type roles? | 8-12 composite tokens, each bundling family, size, weight, line height. Not separate atomic tokens. |
 | Type scale ratio? | 1.125-1.2 for dense product UI. Larger ratios waste vertical space. Round to whole pixels. |
 | Emphasis via weight or color? | Weight. Color expresses hierarchy, not importance. Pick one and document it. |
-| Breakpoints? | Derive from where content breaks, not device names. Carbon's 320/672/1056/1584 is a safe default. |
+| Breakpoints? | Derive from where content breaks, not device names. Carbon's 320/672/1056/1584 is a safe default (four of Carbon's five; xlg 1312 omitted). |
 | Density? | Per surface, not global. Scanning many things = tight. Reading about one thing = roomy. |
 | Icon grid? | 24x24 default, 16x16 for dense dashboards. One stroke weight, squared terminals, optical not mathematical sizing. |
 | Icon without a label? | Only if universally understood. Decorative icons get `aria-hidden`, meaningful ones need an accessible name. |
@@ -207,9 +224,9 @@ components that consumed primitives means re-touching every state.
 | Parallelize what? | Components, stories, research, audits, **and the HTML preview sections**. Never tokens, registry, or naming. |
 | Fan out one big file? | Yes. Orchestrator writes the shell, agents return **fragments**, orchestrator stitches. Agents never write the file. |
 | Generate a primitive with no semantic token pointing at it? | **Never.** Ask "which semantic token uses this?" for every primitive. No answer means it should not exist. |
-| Build on what? | Ask. From scratch on headless primitives, Astryx (MIT, 150+ components, themeable), or shadcn/ui. |
-| What goes in the HTML preview? | **Everything.** The full inventory by atomic layer. Deferring a component in the React build order never means omitting it here. |
-| Which components are required? | The canonical inventory in `components.md`: 24 atoms, 27 molecules, 16 organisms, 6 layout primitives. Domain components on top. |
+| Build on what? | **Default shadcn/ui.** Present three options with your recommendation stated, do not present them as equal. `preview.md` |
+| What goes in the HTML preview? | Everything you **decided to include** after reviewing the inventory. Deferring in the React build order never means omitting from the preview. `preview.md` |
+| Which components must you review? | The canonical inventory in `components.md`, 73 items. It is a **review instrument**: include or exclude each with a reason. Not a build order. `components.md` |
 | Two agents, one file? | Never. If two could write it, only the orchestrator writes it. |
 | Trust a subagent's report? | No. List the files, check `git status`, re-run the gates, spot-read one file in full. |
 | Batch size? | 3-5. Expect partial failure and make every task independently retryable. |
