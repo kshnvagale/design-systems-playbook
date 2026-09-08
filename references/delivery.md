@@ -4,12 +4,17 @@ The order is deliberate and non-negotiable:
 
 ```
 foundations + tokens
-  -> ONE HTML FILE, complete inventory, atomic layers, fully interactive
-  -> USER APPROVAL
-  -> React components
-  -> Storybook
-  -> generated skill file
+  -> PREVIEW 1: the base system (no page templates)
+  -> APPROVAL GATE 1: is the system right?
+  -> ASK: do you want page templates? which ones? collect input
+  -> PREVIEW 2: page templates, built only from approved components
+  -> APPROVAL GATE 2: are the templates right?
+  -> foundation choice -> React -> Storybook -> generated skill file
 ```
+
+**Two gates, not one.** Page templates are a separate concern from the system itself. A
+team that ran this with a single gate got templates built in the same pass as the system,
+before anyone had said which pages they wanted or supplied a single screenshot.
 
 **The HTML comes before React, and it contains everything.** Two separate reasons, and
 both matter:
@@ -76,11 +81,14 @@ Calendar / Date Picker · File Upload · Typeahead / Combobox
 
 Stack · Grid · Section · Container · Aspect Ratio · Resize Handle
 
-#### PAGES (2-3)
+#### ONE COMPOSED SCREEN (not templates)
 
-Fully composed real screens assembled from everything above. Components in isolation
-always look fine. A composed screen is where slot collisions, density mistakes, and
-genuinely missing components become visible.
+Exactly one realistic assembled screen, as a **sanity check on the system**, not as a
+template deliverable. Components in isolation always look fine; one composed screen is
+where slot collisions, density mistakes, and genuinely missing components become visible.
+
+**Page templates are not part of preview 1.** They come after gate 1, with their own
+input and their own gate. See below.
 
 ### The tier-3 exemption trap, closed explicitly
 
@@ -310,7 +318,7 @@ and getting agreement.
 
 ---
 
-## 3. The approval gate
+## 3. Approval gate 1: the base system
 
 Present the preview and ask for a decision, not for vague feedback:
 
@@ -324,15 +332,86 @@ Present the preview and ask for a decision, not for vague feedback:
 density is wrong," fix it in the HTML and re-present. Iterating one HTML file is cheap.
 Iterating 70 React components is not.
 
+Add one more, because this is the last cheap moment for it:
+
+5. **Are the component names right?** Renaming after React exists is a breaking change
+   touching every consumer. Here it is a find and replace.
+
 Record the approval. It is the point at which the visual language and the scope both stop
 being negotiable and become a contract.
 
 ---
 
+## 3a. Ask about page templates. Do not assume.
+
+Once gate 1 passes, **ask**. Do not start building pages.
+
+> The base system is approved. Do you want me to build page templates on top of it?
+>
+> If yes, I need three things: the list of pages or screens you want, any screenshots or
+> references for each, and real content where you have it. Real product names, real copy
+> lengths, real numbers. Templates built on placeholder content break the moment real
+> content arrives.
+
+**The answer may legitimately be no.** Some teams want the system and will compose pages
+themselves. Building templates nobody asked for is exactly the failure this split exists to
+prevent.
+
+### Preview 2: templates only
+
+Built strictly from approved components, in the same two-pane shell, same fan-out method.
+
+**The hard rule: a template may not introduce a new component.** If a page needs something
+the system does not have, that is a system gap to report and add deliberately, then
+regenerate. It is not license to invent inside a template. This is the reuse-over-invention
+rule applied one layer up, and it is the rule most likely to be broken under deadline,
+because a template feels like a one-off.
+
+### Approval gate 2: the templates
+
+Different questions from gate 1. Ask these:
+
+1. Does this page do its job? What is the one action you want a user to take here?
+2. Is the content hierarchy right? Is the most important thing the most prominent thing?
+3. Is anything missing from the flow, as opposed to missing from the system?
+4. Does it hold up with your real content lengths, not the placeholder ones?
+
+**Why the ordering matters:** templates built after approval get built once. Templates
+built before it get rebuilt every time a component changes, which during a first build is
+constantly.
+
+---
+
+## 3b. After gate 2: ask before writing any React
+
+Gate 2 passing does not mean "start building." There are two more questions, and both
+have real consequences.
+
+> Templates approved. Two things before I write any React:
+>
+> **1. Do you want marketing surfaces too** (landing page, pricing, blog index), or is
+> this product only? Marketing needs an extended type and spacing scale and its own
+> component set, so it changes what I build.
+>
+> **2. What should I build the components on?** Three options, and I would recommend
+> [X] for you because [reason from discovery]. Here are the tradeoffs.
+
+The first question may already be answered from discovery. Ask it again anyway if it was
+vague, because "we'll need a website at some point" and "the marketing site is in scope"
+are different projects. See `marketing-surfaces.md`.
+
+The second is the foundation choice below. **Do not pick it silently.** It determines what
+the team maintains for years, and the tradeoffs are legible enough that the user should get
+to weigh in.
+
+Only after both are answered does React work start.
+
+---
+
 ## 4. Choose the foundation before writing React
 
-Once the preview is approved, put three options to the user. Do not pick silently. But do
-not present them as equally weighted either: **there is a default, and you should say so.**
+Put three options to the user. Do not pick silently. But do not present them as equally
+weighted either: **there is a default, and you should say so.**
 
 ### The default: shadcn/ui as the base, Astryx as the reference
 
@@ -476,7 +555,95 @@ metadata from your types, which is what makes it machine-readable downstream.
 
 ---
 
-## 6. The generated skill file
+## 6. PROGRESS.md: the build's own state file
+
+A full build is roughly 73 components across several phases, fanned out to subagents,
+spanning multiple sessions. Nothing about that survives a context window. **Create a
+`PROGRESS.md` at the start and keep it current.**
+
+It does three jobs:
+
+1. **Resumability.** A new session, or the same session after compaction, reads one file
+   and knows exactly what exists and what does not.
+2. **Coordination.** Parallel agents work against one shared picture of scope.
+3. **Verification surface.** A ticked box that does not match the codebase is a drift
+   signal, and a cheap one to check.
+
+### Create it right after the inventory is settled
+
+Every item from the canonical inventory becomes a checkbox, grouped by phase and layer:
+
+```markdown
+# ShiftCart Design System - Build Progress
+
+Updated: 2026-08-27 | Phase: components | Gate 1: passed | Gate 2: passed
+
+## Phase 1: Foundations
+- [x] Discovery summary approved
+- [x] Visual philosophy written (5 statements)
+- [x] Color: 37 primitives, 62 semantic
+- [x] Type: 11 roles
+- [x] Spacing, radius, elevation, motion
+- [x] Contrast audit: 0 failures across both themes
+
+## Phase 2: Preview 1 (base system)
+- [x] Shell: tokens, theme toggle, base classes
+- [x] Foundations section
+- [x] Atoms (24/24)
+- [x] Molecules (27/27)
+- [x] Organisms (16/16)
+- [x] Layout primitives (6/6)
+- [x] GATE 1 APPROVED 2026-08-26
+
+## Phase 4: React components
+### Atoms (18/24)
+- [x] Button          variants: 4  states: 6  story: yes  a11y: pass
+- [x] Icon Button     variants: 3  states: 6  story: yes  a11y: pass
+- [ ] Slider          BLOCKED: needs range token decision
+- [ ] Kbd
+...
+
+## Open gaps
+- Slider: no range-fill token exists. Decide before building.
+- Toast: stacking behavior undefined beyond 3 concurrent.
+```
+
+Carry per-component detail (variants, states, story, a11y) rather than a bare tick. A
+ticked box that only means "a file exists" is worth very little.
+
+### Who writes it
+
+**The orchestrator writes it. Subagents do not.**
+
+This follows the single-writer rule in `orchestration.md`, and it matters more here than
+anywhere else: `PROGRESS.md` is one file that every agent in a batch would touch at the
+same time. Concurrent read-modify-write on a markdown file produces lost updates silently,
+with no error and no indication whose version won. That is the same failure mode as two
+agents writing the same component file.
+
+The protocol:
+
+1. Each subagent **returns a structured completion list**: which items it finished, with
+   the per-item detail, plus any gap it hit.
+2. The orchestrator **verifies** against the actual files.
+3. The orchestrator **ticks the boxes**.
+
+The verification step is not ceremony. Agents have been observed reporting success on work
+that did not match the artifacts, so ticking only what you confirmed is what keeps the file
+trustworthy. An unreliable progress file is worse than none, because it gets believed.
+
+**If you want agents writing directly**, the safe variant is one status file per agent
+(`.progress/atoms-a-l.md`) that the orchestrator merges into `PROGRESS.md`. No shared
+write, agents still self-report. Slightly more moving parts, same guarantee.
+
+### Keep it current at phase boundaries
+
+Update after every batch returns and at every gate. A progress file updated once at the
+start is a plan, not a progress file.
+
+---
+
+## 7. The generated skill file
 
 When the system is built, generate **one skill file** so a designer or an agent can use it
 without rediscovering it. One file, not a folder.

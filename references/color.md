@@ -1,6 +1,188 @@
 # Color palette construction and accessibility reference
 
-## The Radix 12-step model (the single most useful artifact in this space)
+## Decide how many hues. Then take the whole ramp.
+
+Two separate decisions get conflated here, and getting them backwards is the most common
+palette mistake.
+
+- **How many hues do you generate and expose?** Be deliberate. This is where restraint
+  belongs.
+- **How deep is each hue that earns a ramp?** Full depth. Twelve steps. Do not economize
+  here.
+
+An earlier version of this file said status hues need only "3-4 steps each." **That was
+wrong**, and worth correcting explicitly rather than quietly. Radix's own step map shows
+why: a danger color realistically needs a subtle background (3), a hover (4), a border
+(6-7), a solid fill (9), a solid hover (10), and text (11-12). That is 7-8 steps before
+anything unusual happens. Ship a destructive Button with a hover state, plus an error
+Alert, plus error text, and you have used most of the ramp.
+
+**Truncating a ramp is worse than generating it in full.** The moment someone needs a step
+that does not exist, they invent a value. That is precisely the failure this rule exists to
+prevent, arrived at from the opposite direction.
+
+### Where restraint actually belongs: hue count and exposure
+
+**Availability is permission.** Designers and agents both reach for what is in front of
+them. Generate and expose twelve hues when the product needs five, and the other seven will
+appear somewhere, uncontrolled, then have to be policed forever. That is a real and
+reliable failure pattern in a design team.
+
+But notice what it is about: **how many hues are visible in the design surface**, not how
+many steps each one has.
+
+### Library versus generated: the distinction that resolves the argument
+
+Radix explicitly says you may eventually want most of its scales, citing multiplayer color
+assignment, per-task labelling, and status badges
+([composing a palette](https://www.radix-ui.com/colors/docs/palette-composition/composing-a-palette)).
+That reads as a contradiction of the restraint rule. It is not, because Radix and a
+generated token set are different kinds of object.
+
+| | Adopting Radix Colors | Generating your own |
+|---|---|---|
+| What it is | A library you import from | A token set you author, publish, and own |
+| Unused scales live | In `node_modules` | In your token file, Figma, picker, and docs |
+| Cost of the surplus | Zero, they are unavailable until imported | Real, every one is visible and pickable |
+| Curation | ~31 scales, hand-tuned for harmony and accessibility | Whatever your generator emitted |
+
+`import { blue, slate } from '@radix-ui/colors'` leaves the other scales invisible. They are
+not in your design surface, so they are not an invitation.
+
+**So:** if you are adopting Radix, import the scales you need, take all twelve steps of
+each, and ignore the rest. There is no restraint problem to solve. If you are generating
+your own, you own the exposure problem, so decide hue count deliberately.
+
+Worth knowing if you adopt: Radix states its colors are **not intended to be customised**,
+since customisation likely breaks the accessibility and harmony they were tuned for. Their
+own recommendation is to use Radix for grays and semantic scales and add custom brand
+scales alongside.
+
+### Three palettes, one primitive foundation
+
+The other half of the resolution. Radix bundles everything into one library because it is
+one library. A design system should separate three palettes, because they answer to
+genuinely different constraints.
+
+| Palette | Hues | Depth | Theme-reactive | Optimized for |
+|---|---|---|---|---|
+| **UI** | brand + neutral + 3-4 status | Full 12-step ramps | Yes | State, hierarchy, interaction |
+| **Categorical** | 8-12 | 1-2 steps each | Yes | Mutual distinguishability, colorblind safety |
+| **Illustration** | Small locked set | Deep tonal range per hue | **No, frozen across modes** | Harmony within a composition |
+
+**UI palette.** Everything this file otherwise discusses. Few hues, full ramps, driven by
+the semantic token layer.
+
+**Categorical palette.** This is what Radix's multiplayer and labelling examples actually
+describe: colors used to tell things apart from each other, not to express state. User
+avatars, task labels, chart series, tags. It needs breadth, and it has a hard constraint
+the UI palette does not: **every hue must be distinguishable from every other hue**, when
+adjacent, at small size, and under the common color vision deficiencies. Also from your
+status colors, so a chart series does not read as an error.
+
+**Illustration palette.** Small, deliberately locked, with real tonal range inside each hue
+for shadows, midtones, and highlights.
+
+### Why categorical and illustration must not be merged
+
+The obvious move is to reuse one for the other, since both want more hues than the UI
+palette. Do not.
+
+- **They optimize for opposing goals.** Categorical needs maximum mutual
+  distinguishability. Illustration needs harmony, colors that sit together in one
+  composition. Maximally distinguishable hues placed side by side look garish; harmonious
+  hues are by definition closer together and harder to tell apart. You cannot maximize both
+  in one set.
+- **Breadth versus depth.** Categorical is wide and shallow: many hues, one or two steps
+  each. Illustration is narrow and deep: few hues, many tones each. Opposite shapes.
+- **Dark mode behaves differently.** Categorical colors sit on a background that changes,
+  so they need dark-mode variants. Illustrations are decorative and should be **frozen**,
+  not recoloured per theme. See `visual-language.md`, where illustrations are decorative
+  and carry `aria-hidden`.
+
+**What all three share:** the same primitive foundation and the same hue families, so
+nothing clashes across surfaces. Shared root, divergent branches. An illustration drawn
+from the same hue family as the brand ramp will sit correctly next to product UI without
+anyone tuning it.
+
+### What a real generated UI palette looks like
+
+Concrete, because abstract rules lose to concrete tables:
+
+```
+brand        12 steps   full ramp
+neutral      12 steps   full ramp, used more than everything else combined
+success      12 steps   full ramp
+warning      12 steps   full ramp
+danger       12 steps   full ramp
+info         12 steps   full ramp
+------------------------------------------------------------------
+             72 primitives
+```
+
+Around **72** for a typical single-brand product. Drop to three status hues and it is 60;
+add a defined accent and it is 84. **60-85 is the honest range.** Compare a twelve-hue
+matrix at 144, which is roughly double for hues nobody named a job for.
+
+The saving does not come from shortening ramps. It comes from not generating the six to
+eight hues that had no purpose.
+
+### The generation procedure
+
+1. **Write the semantic token list first.** Surface, content, border, action, feedback
+   families.
+2. **Derive the hue list from it.** Which distinct hues do those semantics actually
+   require? That list is usually shorter than instinct suggests.
+3. **For each hue on the list, generate the full 12-step ramp.** Do not truncate.
+4. **If a hue cannot be justified from the semantic list, do not generate it.** Not as a
+   partial ramp either. It either has a job or it does not exist.
+5. **Decide separately whether you need a categorical palette or an illustration palette.**
+   Those are their own decisions with their own constraints, not an extension of this one.
+6. **Count the hues and state the number out loud before building.** More than about seven
+   UI hues for a single-brand product means something is being generated speculatively.
+
+### The self-check
+
+The question is about hues, not steps:
+
+> **What job does this hue do, and which semantic tokens depend on it?**
+
+Any hue with no answer should not exist, at any depth. Within a hue that does have a job,
+the honest answer for individual steps is usually "all twelve, across states not built
+yet," which is exactly why truncating is the wrong economy.
+
+### The honest counter-argument
+
+Multi-brand and white-label systems need more primitive headroom, because a second brand
+may land anywhere on the ramp. And generating a ramp is nearly free, since a script
+produces it in a second.
+
+Both true, and the resolution is the one this skill applies to token tiers: **generate what
+you like in the source, but only expose and document what has a job.** The thing to control
+is availability in the design surface, not the existence of values in a build file. Hiding
+unused primitives is the same argument as hiding the primitive tier from designers, applied
+to hue count.
+
+### Why this matters more with agents
+
+A model given twelve hues will use more of them than a model given five. Constraining the
+option set is one of the few reliable ways to constrain output, and it costs nothing. Same
+logic as a coarse spacing scale, a small component allowlist, and off-scale values that
+fail to compile.
+
+Note the asymmetry in what constraining means here: **fewer hues, full ramps.** A model
+that finds no hover step for a color it is already using will invent one.
+
+## What each step is for: the Radix purpose map
+
+**This table is the argument for full depth.** Read down it and notice how few steps are
+optional: a component background, its hover, its pressed state, two border weights, a solid
+fill, that fill's hover, and two text weights. Those are not twelve arbitrary shades, they
+are twelve jobs that recur in real interfaces.
+
+That is why the guidance above says take the whole ramp for any hue that earns one. Use
+this table to assign purpose, and use it as a checklist when you are tempted to truncate:
+whichever step you drop is the state someone improvises later.
 
 Radix Colors documents an exact, per-step semantic purpose for every step in a 12-step scale. This is worth adopting close to verbatim - it answers "how many steps" and "what is step N for" in one table. Source: [radix-ui.com/colors/docs/palette-composition/understanding-the-scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
 
@@ -20,63 +202,6 @@ Radix Colors documents an exact, per-step semantic purpose for every step in a 1
 | 12 | High-contrast text |
 
 Steps 1-2 are backgrounds, 3-5 are component backgrounds by state (rest/hover/pressed), 6-8 are borders by strength/interactivity, 9-10 are solid/brand fills, 11-12 are text. **This step-to-purpose mapping is more valuable than the step count itself** - copy the mapping even if you settle on a different number of steps.
-
-## Generate only the color you need
-
-Before deciding how many steps, decide how many **hues**. The default instinct is to
-generate a full matrix, twelve hues times twelve steps, because the tooling makes it free.
-Do not.
-
-**A generated full spectrum is not neutral. Availability is permission.** Designers and
-agents both reach for what is in front of them. Ship 12 hues when the product needs 4 and
-the other 8 will appear somewhere, uncontrolled, and then have to be policed forever. This
-is one of the most reliable failure patterns in a real design team: give people every
-color and the colors end up in random places, justified after the fact.
-
-### What a real product actually needs
-
-| Family | How much | Why |
-|---|---|---|
-| **Brand / primary** | One hue, full ramp | The only hue that usually needs every step, because it carries backgrounds, borders, fills, and text |
-| **Neutral** | One ramp, full | Used more than everything else combined: backgrounds, borders, body text, disabled states |
-| **Status** (success, warning, danger, info) | 3-4 steps each, not full ramps | Each needs a surface, a border, and a content step. Nothing else. |
-| **Accent / secondary** | Only if it has a defined job | If you cannot name what it is for, do not generate it |
-| **Data visualization** | Separate palette, only if there are charts | Different constraints entirely, see below |
-
-For a typical product that is roughly **two full ramps plus four partial ones**, not twelve
-full ones. Around 40 real color tokens rather than 144 swatches.
-
-### The rule
-
-**Generate a ramp step when a semantic token will point at it. If no semantic token
-references a step, do not ship the step.**
-
-The semantic layer is the demand signal. The primitive layer should satisfy demand, not
-anticipate it. Work backwards: write the semantic token list first (surface, content,
-border, action, feedback families), then generate exactly the primitives those aliases
-need.
-
-Adding a step later is trivial. Removing one after it has been used in forty places is
-not. The asymmetry should decide this for you.
-
-### The honest counter-argument
-
-Multi-brand and white-label systems genuinely need more primitive headroom, because a
-second brand may land anywhere on the ramp. And a full perceptual ramp is nearly free to
-*generate*, since a script produces it in a second.
-
-Both are true, and the resolution is the same one this skill applies to token tiers:
-**generate the full ramp in the source if you like, but only expose and document the steps
-in use.** The thing to control is availability, not the existence of values in a build
-file. Hiding unused primitives from the day-to-day design surface is the identical
-argument, applied to palette size instead of tier depth.
-
-### Why this matters more with agents
-
-A model given 144 color tokens will use more of them than a model given 40. Constraining
-the option set is one of the few reliable ways to constrain output, and it costs nothing.
-The same logic runs through this skill: a coarse spacing scale, a small component
-allowlist, off-scale values that fail to compile.
 
 ## How many steps, and why systems disagree
 
@@ -120,8 +245,8 @@ A production palette needs, at minimum:
 
 1. **Primary/brand** - the one hue used to signal "this is interactive/on-brand." Often the accessibility bottleneck: bright yellows, limes, and light oranges frequently fail 4.5:1 as text/icon color on white. **Standard fix**: don't force the literal brand hue to serve as your accessible "primary action" color. Either (a) use a darker/higher-chroma step from the same hue family for text/icon/interactive-foreground use and reserve the literal brand hue for large fills/logos/marketing surfaces, or (b) treat brand color as decorative-only and pick a separate, accessible "action" color for interactive elements. A useful discipline either way: reserve the brand hue for elements the user can actually act on, never for decorative fills, so "brand-colored" and "interactive" stay the same signal.
 2. **Neutrals** - the largest and hardest-won ramp in any system, because it's used far more than brand color (backgrounds, borders, body text, disabled states). Decide warm/cool/true-neutral early: pure grey (no hue) is safest for multi-brand/white-label systems; a neutral tinted slightly toward the brand hue (e.g. a warm grey if brand is orange) reads as more "designed" but complicates white-labeling later.
-3. **Semantic/status** - success, warning, danger, info at minimum. Each needs its own mini-ramp (surface/border/content triplet at least) so status colors work as backgrounds, borders, and text, not just a single swatch.
-4. **Data visualization palette** - must be a **separate palette** from UI color, with its own constraints: categorical palettes need hues distinguishable from each other *and* from your semantic status colors (so a chart series in red doesn't read as "error"), sequential/diverging palettes need perceptually even steps (again, generate in OKLCH/LCH, not HSL). This is frequently skipped in from-scratch builds and then improvised per-chart, causing inconsistency across dashboards. Razorpay's Blade explicitly ships a dedicated "Chart Color Themes" doc separate from its UI tokens - a concrete signal that mature systems treat this as its own workstream.
+3. **Semantic/status** - success, warning, danger, info at minimum. Each needs a **full ramp**, not a triplet. Status colors carry surfaces, hovers, borders, solid fills, fill hovers, and text, and a destructive Button alone exercises most of the scale. See the corrected guidance at the top of this file.
+4. **Categorical and illustration palettes** - separate from UI color, and separate from each other (see the three-palette model above). Categorical covers chart series, task labels, and user avatars, with its own constraints: categorical palettes need hues distinguishable from each other *and* from your semantic status colors (so a chart series in red doesn't read as "error"), sequential/diverging palettes need perceptually even steps (again, generate in OKLCH/LCH, not HSL). This is frequently skipped in from-scratch builds and then improvised per-chart, causing inconsistency across dashboards. Razorpay's Blade explicitly ships a dedicated "Chart Color Themes" doc separate from its UI tokens - a concrete signal that mature systems treat this as its own workstream.
 
 ## B2B / B2C / internal tools implications
 
@@ -133,13 +258,18 @@ A production palette needs, at minimum:
 
 - **12-step (Radix, purpose-mapped) vs 10-11 step (Tailwind/Carbon, general-purpose) ramps.** Not really a disagreement about correctness, more about whether you want a scale with baked-in usage guidance (Radix) or a blanker scale you map yourself (Tailwind). For a from-scratch 10k+ user build, the Radix step-purpose table is worth adopting regardless of exact step count chosen.
 - **WCAG 2 vs APCA.** WCAG 2 is legally referenced today; APCA is more perceptually accurate but not yet normative. Don't drop WCAG 2 compliance in favor of APCA-only for anything with compliance exposure.
+- **Whether to generate full ramps for status hues.** Settled here in favor of full depth, on the grounds that a truncated ramp gets improvised past. The counter-position is that a partial ramp is a forcing function that surfaces unplanned states early. Reasonable, but it fails at the wrong moment: under deadline, when someone needs a hover and invents one.
+- **Whether the categorical palette should be part of the design system at all.** Some teams treat it as a data-viz concern owned by the charts library. Defensible when charts are the only consumer, less so once user avatars and task labels need the same hues.
 - **True neutral grey vs brand-tinted neutral.** Multi-brand/white-label systems should default to true neutral (portable across brands); single-brand consumer products often deliberately tint neutrals warm or cool to reinforce brand feel.
 
 ## Common failure modes
 
 1. Picking a primary/brand hue for its marketing appeal without checking it can serve as an accessible interactive-foreground color (bright yellow/lime/light-orange brands hit this constantly).
-2. **Generating the full spectrum because the tool made it easy.** Every unused ramp is an invitation, and the surplus becomes a license to improvise. Generate against the semantic token list, not against what the generator can produce.
-2. Building the UI palette and the data-viz palette as the same thing - chart colors then accidentally collide with status colors (a "red" data series reading as an error state).
-3. Generating a ramp in HSL by eye, producing uneven perceptual steps that look "off" without anyone being able to say exactly why.
-4. Skipping a genuinely separate accessibility pass for dark mode, assuming light-mode contrast compliance transfers.
-5. Encoding a status or requirement purely in color with no secondary indicator (icon/text/pattern), failing color-blind users.
+2. **Generating and exposing hues nobody named a job for.** Every unused ramp is an invitation, and the surplus becomes a license to improvise. Derive the hue list from the semantic tokens, not from what the generator can produce.
+3. **Truncating a ramp to save tokens.** The opposite failure, and the more expensive one. A missing hover or border step gets invented inline, which is drift with extra steps. Fewer hues, full ramps.
+4. **Merging the categorical and illustration palettes** because both wanted more hues. They optimize for opposing goals: distinguishability versus harmony.
+5. **Recolouring illustrations per theme.** Illustrations are decorative and should be frozen across modes; only categorical and UI colors need dark variants.
+6. Building the UI palette and the categorical palette as the same thing - chart colors then collide with status colors, and a red series reads as an error state.
+7. Generating a ramp in HSL by eye, producing uneven perceptual steps that look "off" without anyone being able to say exactly why.
+8. Skipping a genuinely separate accessibility pass for dark mode, assuming light-mode contrast compliance transfers.
+9. Encoding a status or requirement purely in color with no secondary indicator (icon/text/pattern), failing color-blind users.
