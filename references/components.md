@@ -155,10 +155,15 @@ rest.**
 
 **Deferring a component in the build order is never permission to omit it from the
 inventory or from the HTML preview.** Those are different artifacts answering different
-questions. See `delivery.md`.
+questions. See `preview.md`.
 
 The layer names here are the same ones used in the HTML preview sections and in package
 structure (`build-architecture.md`), so one vocabulary runs from preview to shipped code.
+
+**Lock naming before you build any of these.** Component and prop names are a public API
+the moment anything consumes them, and renaming after React exists touches every
+consumer. See `naming.md`, especially the ARIA-alignment rules for the contested names
+(Modal vs Dialog, Dropdown vs Listbox vs Menu vs Combobox).
 
 ## A defensible build order
 
@@ -305,6 +310,27 @@ plus semantic token layer, one shared component layer, and product-specific comp
 one level up.** Product teams assemble screens from shared components; they do not fork
 the components. Brand differentiation lives in which values the semantic tokens resolve
 to, not in duplicated component code.
+
+## Precedent: what to take from which system
+
+| System | Take this |
+|---|---|
+| **Radix Colors** | The 12-step ramp with a documented purpose per step. The most reusable artifact in the field. |
+| **Material 3** | Dark-mode methodology: lightness encodes elevation, the contrast headroom rule, tonal surfaces. |
+| **Blade (Razorpay)** | Coverage as the adoption metric. 1:1 Figma-prop to code-prop naming. Written API decision records. |
+| **Atlassian** | Motion tokens named by intent (`motion.popup.enter`), not by raw duration values. |
+| **Adobe Spectrum** | The architecture split: React Aria as the interaction engine, Spectrum as the visual layer. |
+| **Shopify Polaris** | B2B admin reference: data tables, filters, bulk actions, one token source to many outputs. |
+| **IBM Carbon** | Density and restraint defaults for dense enterprise software. |
+| **GitHub Primer** | Proof that a single-product system should stay simple. Match complexity to portfolio breadth. |
+
+Universal agreement across all of them: three token tiers, dark mode as authored values
+rather than inversion, headless primitives underneath, ARIA-aligned naming, and adoption
+measured rather than assumed.
+
+---
+
+---
 
 ## Contested
 

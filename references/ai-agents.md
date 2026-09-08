@@ -7,107 +7,51 @@ rest of the skill.
 
 ## First, the honest answer on Figma
 
-The premise "Figma might not even be relevant" deserves scrutiny, not agreement. Two
-survey data points, not vendor announcements, are the right place to start:
+**The verdict:** Figma is not dying, and no single challenger is displacing it. But the
+center of gravity for design decisions is moving toward structured data and code, and
+Figma itself is trying to become one visual surface onto that data rather than the sole
+source of truth. **Treat the design tool as a surface, not as the database.** Build so
+code (or a platform-neutral spec, see below) is the source of truth and the canvas is a
+view onto it.
+
+Two survey data points, not vendor announcements:
 
 - The [UX Tools State of Prototyping survey](https://survey.uxtools.co/spring-2026)
-  (22,000+ designers surveyed since 2017) still finds **Figma the most-used design tool
-  in 2026.** What is changing is how it gets used, not whether it gets used.
+  (22,000+ designers since 2017) still finds **Figma the most-used design tool in 2026.**
+  What is changing is how it gets used, not whether.
 - The [State of AI Design Report 2026](https://stateofaidesign.com/chapters/tools):
-  frequent AI usage among designers jumped from **54% to 91% in one year**; **50% of
-  surveyed designers have shipped code to production**; **76% have used an AI coding
-  tool** (Claude Code, Codex, Cursor, Copilot) and **85% have used one of those and/or an
-  app builder** (Lovable, Replit, Bolt). Adoption of internally-built AI tooling scales
-  sharply with company size: **74% at 2,000+ employee companies, 48% at 501-2,000, 34%
-  at 51-500, 26% at 1-50.**
+  frequent AI usage among designers jumped from **54% to 91% in one year**, **50% have
+  shipped code to production**, and **76% have used an AI coding tool**. Internally-built
+  AI tooling scales sharply with company size: **74% at 2,000+ employee companies versus
+  26% at 1-50.** Code-fluency in design concentrates at large, well-resourced companies.
+  A 10k+ user company is exactly the size where this is normal practice, not an outlier
+  bet. (A competitor launch moving Figma's stock for a day is noise, not evidence.)
 
-Read that last stat carefully: code-fluency in design concentrates at large,
-well-resourced companies, not evenly across the industry. A 10k+ user company is exactly
-the size where this is now normal practice, not an outlier bet. A five-person startup is
-a different story.
-
-**A specific bad-evidence pattern worth naming:** in April 2026, Anthropic shipped Claude
-Design and Figma's stock dropped about 7% in a day, producing a wave of "Figma is dying"
-takes. A one-day stock move reacting to a new competitor's launch is not evidence of
-obsolescence; treat it as noise. The actual data points the other way. Figma's own
-**State of the Designer 2026** survey (906 designers, run with NewtonX) and its separate
-**2026 AI Report** (8,403 responses over three years, 639 qualitative interviews) found
-that as AI made code generation more accessible, design expertise became *more* valuable,
-not less: **90% of respondents building AI-powered products said design is at least as
-important as before AI, and 57% said it is more important**
+**Config 2026 was absorption, not retreat.** Code layers (a design layer that is literally
+runnable code on the canvas, convertible both ways), [Figma Make editing your real
+production codebase](https://www.figma.com/blog/figma-make-now-on-your-local-code/) and
+opening real pull requests, and a remote MCP server letting agents build and update frames,
+components, and variables inside Figma. Dylan Field on stage: "Code is not the opposite of
+design. Code is material for design."
+([recap](https://www.figma.com/blog/config-2026-recap/),
+[analysis](https://qubika.com/blog/figma-config-2026-announcements-for-designers/)). Their
+2026 AI Report found **90% of respondents building AI-powered products said design is at
+least as important as before AI, 57% said more**
 ([figma.com/blog/2026-ai-report](https://www.figma.com/blog/2026-ai-report/)).
 
-**What Figma actually shipped at Config 2026** (June 2026) confirms this: not retreat,
-absorption. In Figma's own words: "For years, the design industry has talked about
-'design versus code'... but this is a false debate. Design is a process. Code is
-material, just like images, vectors and design layers... So we are introducing code
-layers in Figma."
-([figma.com/blog/config-2026-recap](https://www.figma.com/blog/config-2026-recap/)).
-
-- **Code layers** (closed beta): a design layer that is literally runnable code on the
-  canvas, convertible back and forth between design layer and code layer with a single
-  click. Clone a repo, extract interaction flows from existing code as inspectable
-  design layers.
-- **Figma Make now edits your real production codebase**
-  ([figma.com/blog/figma-make-now-on-your-local-code](https://www.figma.com/blog/figma-make-now-on-your-local-code/)),
-  not just prototypes: clone a GitHub repo, select an element, the agent finds the
-  relevant code and edits it so the UI reflects what you designed, then opens a real
-  pull request with branches and revertible commits.
-- **The Figma MCP server** (remote) lets agents build and update frames, components, and
-  variables *inside* Figma using your design system as source of truth, bidirectionally.
-- Dylan Field's own framing, stated on stage: "Code is not the opposite of design. Code
-  is material for design."
-  ([qubika.com Config recap](https://qubika.com/blog/figma-config-2026-announcements-for-designers/))
-
-Figma's strategy is not "stay a design-only tool." It is "become the place where design
-and code are the same material." That is a materially different claim than "Figma is
-becoming irrelevant."
-
-**What genuinely supports the other side of the premise:** Nathan Curtis, the single
-most credentialed voice in this field (25+ years, 80+ systems consulted), writing in his
-own newsletter in early 2026:
-
-> "I suspect I'll be broadening how to extract, transform and inject that data using
-> things like Figma's Rest API and MCP as our field shifts, relates and **may even move
-> away from our Figma canvas** as generative approaches take us somewhere else."
-> ([Design Systems Collective](https://www.designsystemscollective.com/were-focused-too-much-on-design-tokens-nathan-curtis-on-design-systems-today-a329fdd79d4c))
-
-And, on what actually consumed his team's time in 2025: "I certainly did NOT predict
-that my team's 2025 would be spent recording architectural decisions about components by
-reviewing copious examples formatted in yaml and markdown instead of Figma and
-Storybook. But here we are."
-
-A real, lived account of the split this creates: a first-hand 2026 report describes a
-designer who "started skipping Figma altogether, going straight to Claude Code, not as a
-statement, just as the faster path," on a team that had merged 350+ PRs from designers
-using Cursor and Figma MCP by Q4
-([uxdesign.cc, "The Design Engineer Symptom"](https://uxdesign.cc/the-design-engineer-symptom-what-a-rising-job-title-reveals-850d5e4fd9cc)).
-Both things are true at once: some designers go straight to code for speed, and Figma
-remains what most teams still use for exploration, review, and non-technical stakeholder
-buy-in. **Design as source of truth without any visual medium is currently a minority
-workflow, not the emerging default.** Build for both; do not bet the whole system on
-either disappearing. What is actually dying is the old sequential handoff (sketch, spec
-document, wait for an engineer to translate it by hand), not the canvas itself.
-
-**The calibrated verdict:** Figma is not dying and is not being displaced by a single
-challenger tool. But the *center of gravity for design decisions* is genuinely moving
-toward structured data and code, and Figma itself is trying to become one visual surface
-onto that data rather than the sole source of truth. Treat Figma as a surface, not as the
-database. Design the system so code (or a platform-neutral spec, see below) is the
-source of truth and Figma is a view onto it, not the reverse. This is the same
-conclusion the rest of this skill already reaches for unrelated reasons (code as source
-of truth, synced to Figma), but the 2026 evidence makes it a stronger default, not a
-hedge.
-
-**Design engineer is a real, rising role**, not a buzzword: "the most effective digital
-products... are increasingly shaped by a new kind of operator: the design engineer"
-([Peerlist, April 2026](https://peerlist.io/shuvrojit/articles/the-rise-of-the-design-engineer-in-2026)).
-Qubika's read on Config 2026 is the sharpest single line on what this means for
-individual designers: "The designer who understands how a component library works, who
-can reason about interaction states and edge cases, who thinks in systems rather than
-screens: that designer gains significantly more leverage with Code Layers than someone
-who has operated exclusively in the visual layer." Code literacy is becoming table
-stakes for design leverage, not a separate career track.
+**The genuine counterpoint** is Nathan Curtis, who expects the field may "**move away from
+our Figma canvas** as generative approaches take us somewhere else"
+([Design Systems Collective](https://www.designsystemscollective.com/were-focused-too-much-on-design-tokens-nathan-curtis-on-design-systems-today-a329fdd79d4c)),
+and whose team spent 2025 "recording architectural decisions about components by reviewing
+copious examples formatted in yaml and markdown instead of Figma and Storybook." Some
+designers now skip the canvas and go straight to Claude Code as the faster path
+([uxdesign.cc](https://uxdesign.cc/the-design-engineer-symptom-what-a-rising-job-title-reveals-850d5e4fd9cc)),
+and **design engineer is a real, rising role** where code literacy is table stakes rather
+than a separate track
+([Peerlist](https://peerlist.io/shuvrojit/articles/the-rise-of-the-design-engineer-in-2026)).
+Both things are true at once. **Design without any visual medium is currently a minority
+workflow, not the emerging default.** What is dying is the sequential handoff, not the
+canvas.
 
 ## Why raw Figma data is the wrong thing to feed an agent, even via MCP
 
@@ -127,9 +71,8 @@ not your platform's: `paddingLeft` vs iOS's `.padding(.leading)` vs CSS's
 
 His answer is not "stop using MCP." It is **insert a compilation step**: extract
 Figma's actual state once, deterministically, into a spec that is complete, compact,
-precise, translated to platform-neutral names, versioned, and human-readable. He
-reports fanning out "a TS contract, state-aware CSS, a React scaffold, and Storybook
-stories for 50 components" from generated specs in one pass. **The general principle,
+precise, translated to platform-neutral names, versioned, and human-readable. **The
+general principle,
 independent of tooling choice: live MCP-fetching a design file at generation time is
 fine for one-off inspection. It is the wrong pattern for repeated, at-scale code
 generation. Compile a structured spec once, version it, have agents consume the
@@ -172,10 +115,9 @@ codebase."
 
 **The variable that moved these numbers most was coverage**: how much of the handoff
 design is actually composed of design-system components with a real code mapping, and
-how much of that mapping is actually Code Connected. This is Blade's "% page coverage"
-metric (`governance.md`) applied one layer earlier: an agent's output
-quality is capped by how much of your system is actually mapped, not by which model you
-use.
+how much of that mapping is actually Code Connected. This is the coverage metric from
+`governance.md` applied one layer earlier: an agent's output quality is capped by how much
+of your system is actually mapped, not by which model you use.
 
 ## The architecture that actually works: foundations always-on, components on-demand
 
@@ -445,27 +387,6 @@ make it worse by default, not better" further down for the full evidence. And se
 "Registry metadata and pre-completion compliance checking" for a newer pattern that
 validates before the agent finishes rather than after a human reviews.
 
-   **This is not a mild effect; ground it in real numbers.** A 2026 academic study
-   measuring 21,880 accessibility assessments across five WCAG success criteria found
-   AI-generated interfaces achieved only **29.0% compliance overall**, and the
-   supposedly easy, deterministic, checkable criteria performed *worse*, not better:
-   color contrast at **26.8%**, correct use of color at **19.2%**
-   ([ACM, "Measuring WCAG Violations in AI UI Design Tools"](https://dl.acm.org/doi/full/10.1145/3800424.3800430)).
-   A separate CHI 2025 study (CodeA11y) found AI assistants were not helpful for
-   accessibility unless specifically prompted for it, and that critical manual steps
-   (replacing placeholder alt text with real content) got skipped even then. A W4A 2025
-   study states plainly that current AI tools are inadequate for producing fully
-   accessible code unassisted, and human expertise is still required, particularly in
-   regulated sectors.
-
-   **The practical consequence for token design specifically:** do not rely on an agent
-   to independently choose an accessible foreground/background pairing. Pair tokens so
-   an inaccessible combination cannot be expressed at all (a component API that only
-   accepts a paired `content`/`surface` token set, rather than independent foreground
-   and background props), so contrast is guaranteed by construction, not by hoping the
-   agent checks. Assume every agent-generated screen needs an accessibility pass; do
-   not assume the model self-corrects.
-
 **What has no good answer yet, said honestly:** an LLM-as-judge eval scoring "does this
 generated screen comply with the design system" is an area of real interest (2026 Into
 Design Systems Conference material on agentic design systems) but not yet mature or
@@ -504,13 +425,10 @@ type CardProps =
   | { variant: "marketing"; title: string; badgeText: string };
 ```
 
-**A reframe worth internalizing before any of this: enforcement should be reactive, not
-an attempt at prevention** (the 46-65% first-try / 95-98% with-feedback numbers cited
-earlier apply directly here). This reframes what "enforcement" means for agent-driven
-work: you are not trying to make the agent get it right on the first try. You are
-trying to make wrongness impossible to ship silently, so the agent's own repair loop
-catches it before a human ever sees it. A type error or failing lint rule is doing its
-job if the agent fixes it in the same turn, even though it got it wrong first.
+**Enforcement should be reactive, not preventive** (the 46-65% first-try / 95-98%
+with-feedback numbers above apply directly). A type error or failing lint rule is doing
+its job if the agent fixes it in the same turn, even though it got it wrong first. The
+goal is making wrongness impossible to ship silently, not making the agent perfect.
 
 **A real sequencing failure worth knowing about before you flip on enforcement.** A
 practitioner who enabled spacing-token lint enforcement before the spacing token system
@@ -625,35 +543,30 @@ pass; do not assume the model self-corrects.
 
 ## Practical defaults for a from-scratch system built in 2026
 
-- **Publish a component registry** (shadcn-compatible `registry.json` or your own),
-  not just a component library. The registry is what makes "install this exact
-  component" possible for an agent instead of "approximate this from a description."
+- **Publish a component registry** (shadcn-compatible `registry.json` or your own), not
+  just a library. It turns "install this exact component" into something an agent can do
+  instead of "approximate this from a description."
 - **Split your agent-facing docs into three tiers**, matching the always-on/on-demand
   split above: an always-loaded foundations file (small, token budget matters), an
   MCP or registry for on-demand component lookup, and narrative Markdown for judgment
   calls that a schema cannot express.
 - **Author component contracts in JSON, guidance in Markdown.** Do not dump prose docs
-  into an MCP server and call it done; benchmark it the way Spotify and the 77-component
-  study did before trusting it.
-- **Consider Curtis's Specs/Anova-style extraction** (or the same philosophy, homegrown)
-  if your component library already exists and may have drifted: deterministic
-  extraction of real anatomy from real variants will find drift a documentation
-  rewrite will not.
+  into an MCP server and call it done; benchmark it before trusting it.
 - **Align primitive-tier token names to Tailwind/shadcn conventions** unless you have a
   specific reason not to (a genuine multi-brand/white-label need, a non-web platform).
   This is now a legitimate default, not a compromise.
 - **Ship an `AGENTS.md`** as a thin index pointing at foundations and registry, not a
-  repository of detail itself. Keep it small; rules files that grow past what a model
-  reliably attends to are worse than no rules file, because they create false confidence.
+  repository of detail. Rules files that outgrow what a model reliably attends to are
+  worse than none, because they create false confidence.
 - **Set trust levels per agent action type** as an explicit governance decision, not an
   afterthought once an agent has already merged something wrong.
 - **Pair foreground/background tokens so an inaccessible combination cannot be
   expressed**, rather than trusting an agent to check contrast itself.
 - **Do not treat `llms.txt` as sufficient on its own.** An MCP server or registry the
   agent can query and act on is the mechanism with real evidence behind it.
-- **If you have an existing component library, consider a deterministic spec-extraction
-  step** (Curtis's `specs-cli` or the same philosophy homegrown) before trusting an agent
-  to infer anatomy from raw source.
+- **If a component library already exists, run a deterministic spec-extraction step**
+  (Curtis's `specs-cli` or the same philosophy homegrown) before trusting an agent to
+  infer anatomy from raw source. It finds drift a documentation rewrite will not.
 
 ## What genuinely has little to no evidence yet
 
@@ -676,11 +589,9 @@ Stated plainly rather than inventing confident-sounding guidance:
 
 ## What does not change
 
-Worth stating plainly, because "AI changes everything" is as wrong as "nothing has
-changed." Curtis again: "I see no dramatic, strategic change to *what*
-systems deliver: visual foundations and component features, well-documented and
-threaded through tools that serve experiences across platforms. I do see tremendous
-change in *how* we make and deliver it."
+Curtis: "I see no dramatic, strategic change to *what* systems deliver: visual
+foundations and component features, well-documented and threaded through tools that serve
+experiences across platforms. I do see tremendous change in *how* we make and deliver it."
 
 - Token tiers, dark-mode mechanics, color-ramp construction, and accessibility math are
   unchanged. A model still needs a coherent semantic layer; it consumes it differently
@@ -688,7 +599,7 @@ change in *how* we make and deliver it."
 - The interface-inventory-first principle matters *more*, not less: an agent given a
   generic component list will produce a generic-looking product just as reliably as a
   human copying one would.
-- Governance and adoption measurement are unchanged in kind. Blade's coverage metric
+- Governance and adoption measurement are unchanged in kind. The coverage metric
   generalizes cleanly, since it already measures "how much of this page came from the
   system" - exactly the variable the Coinbase study found most predictive of agent
   output quality.
