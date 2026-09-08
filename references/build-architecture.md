@@ -2,7 +2,7 @@
 
 How the system is arranged on disk, and which structural rules CI enforces. Token
 architecture is in `tokens.md`, what to build is in `components.md`, agent-facing delivery
-is in `ai-agents.md` and `delivery.md`. This file is about the skeleton those hang on.
+is in `ai-agents.md` and `preview.md`. This file is about the skeleton those hang on.
 
 Examples use React and TypeScript because they need to be concrete. The principles are
 stack-neutral.
@@ -83,7 +83,7 @@ tokens -> icons -> atoms -> molecules -> organisms
 
 An atom may never import a molecule. A molecule may never import an organism. The layer
 names are the same ones used in the canonical inventory (`components.md`) and in the HTML
-preview sections (`delivery.md`), so one vocabulary runs from preview to shipped code.
+preview sections (`preview.md`), so one vocabulary runs from preview to shipped code.
 
 **Enforce this with a script that fails CI, not a code review convention.** Scan imports,
 map each file and each import to a layer rank, and fail when a lower rank imports a higher
@@ -210,7 +210,7 @@ document.** No exceptions worth carving out.
 
 A dead in-page link is normally a small annoyance. It stops being small when the
 navigation doubles as a completeness checklist, which is exactly the arrangement the
-preview uses (`delivery.md`). An entry that does not resolve is the artifact asserting that
+preview uses (`preview.md`). An entry that does not resolve is the artifact asserting that
 a component exists when it does not. A checklist that lies is worse than no checklist,
 because it is trusted. In one real case a generated navigation carried eight links pointing
 at ids that were never emitted, and the reviewer had no way to tell without clicking every

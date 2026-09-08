@@ -441,7 +441,7 @@ Do not block on discovery. State the assumption and proceed.
 | Stack | React plus Tailwind, headless primitives underneath |
 | Who writes code | Both humans and agents |
 | Maintainers | One to two people, part-time, until proven otherwise |
-| Token count target | 40-80 primitives, 60-120 semantic |
+| Token count target | 60-85 primitives, 60-120 semantic (`color.md`) |
 | Visual direction | Restrained, border-separated, medium density. State this and ask for a reference to correct it. |
 | Brand color role | Interactive only, never decorative fill |
 | Typeface | System stack or a well-supported open-source face until told otherwise |

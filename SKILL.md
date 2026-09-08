@@ -39,10 +39,10 @@ The artifact set, in build order:
 | **Preview** | **One self-contained HTML file with the COMPLETE inventory**, sectioned by atomic layer, fully interactive, motion running, every variant and state, theme toggle, real content, the company logo, plus 2-3 composed screens. | Every component that will exist is visible and judgeable |
 | **Approval** | An explicit yes on look, feel, motion, and completeness. | Recorded. **React work does not start before this.** |
 | **Components** | React components on headless primitives, uniform file shape per component, every interaction state, `registry.json` allowlist. | A screen can be built from them without inventing anything |
-| **Storybook** | A story file per component: CSF3, `autodocs`, `argTypes` with controls on every prop, one story per variant and per state, `play` functions for interactions, theme switcher, a11y passing. Published to a URL. | Every component is explorable and interactive by someone who did not build it |
+| **Storybook** (`handoff.md`) | A story file per component: CSF3, `autodocs`, `argTypes` with controls on every prop, one story per variant and per state, `play` functions for interactions, theme switcher, a11y passing. Published to a URL. | Every component is explorable and interactive by someone who did not build it |
 | **Enforcement** | Lint rules (no raw values, registry-only imports). Off-scale utilities that fail to compile. CI wiring. A fixture test per rule. Automated a11y checks. | CI fails on a raw hex, and every rule has been observed to fire |
 | **Docs** | A page per component: anatomy, live example, props table, all states, a11y notes, content guidance, do/don't. | A new engineer can use a component without asking anyone |
-| **Generated skill file** | **One file**, part generated (allowlist, tokens, scales, so it cannot drift) and part hand-written (philosophy, judgment calls). States the Storybook URL as source of truth and the never-invent rules. Also shipped as `AGENTS.md`. | Regenerating is one command, and a cold agent builds a compliant screen from it |
+| **Generated skill file** (`handoff.md`) | **One file**, part generated (allowlist, tokens, scales, so it cannot drift) and part hand-written (philosophy, judgment calls). States the Storybook URL as source of truth and the never-invent rules. Also shipped as `AGENTS.md`. | Regenerating is one command, and a cold agent builds a compliant screen from it |
 | **Verification** | Held-out test result with an objective score. A gap inventory. Coverage baseline instrumented. | You know what your system is missing, in writing |
 | **Throughout** | **`PROGRESS.md`**, created once the inventory is settled and updated at every batch and gate. Orchestrator writes it; subagents report and it ticks after verifying. | A fresh session can resume from one file |
 
@@ -72,7 +72,8 @@ for components that do not exist.
 | `references/governance.md` | Team models, contribution, adoption, why systems die |
 | `references/ai-agents.md` | Agent-consumable delivery, enforcement, specs-as-data, Figma's real position |
 | `references/orchestration.md` | Running the build with subagents: what to parallelize, ownership, verification |
-| `references/delivery.md` | Two-gate flow: base-system preview, then templates. Storybook, generated skill file |
+| `references/preview.md` | Two-gate flow: base-system preview, then page templates, and the approval questions |
+| `references/handoff.md` | Storybook definition of done, `PROGRESS.md`, the generated skill file |
 | `references/marketing-surfaces.md` | Landing pages, the brand/product seam, marketing components and token extensions |
 | `references/evaluation.md` | Whether the system works, and whether it is sufficient |
 
@@ -127,7 +128,7 @@ fields" passes.
 3. **Visual language.** Type roles and scale, grid and breakpoints, density per surface,
    icon grid and stroke, motion intent, voice. Do this *with* tokens, not after.
 4. **Semantic tokens first, then generate only the primitives they point at.** Light mode
-   first. ~40-80 primitives, ~60-120 semantic. **Read `color.md` before generating any
+   first. ~60-85 primitives, ~60-120 semantic. **Read `color.md` before generating any
    ramp**, and count your primitives out loud before building. Over ~50 for a
    single-brand product means something is speculative.
 5. **Lock naming.** Renaming after adoption is a breaking change.
@@ -136,21 +137,21 @@ fields" passes.
 7. **HTML preview 1: the base system only** (foundations, atoms, molecules, organisms,
    layout primitives). **No page templates.** Fully interactive with motion running.
    **Then approval gate 1.** This is where completeness is proven. If a component is not
-   in the HTML, it will be forgotten. `delivery.md`
+   in the HTML, it will be forgotten. `preview.md`
 7a. **Ask whether they want page templates, and collect input.** Page list, screenshots,
    references, real content. The answer may be no. Then **HTML preview 2** and
-   **approval gate 2**. A template may never introduce a new component. `delivery.md`
+   **approval gate 2**. A template may never introduce a new component. `preview.md`
 7b. **After gate 2, ask two things before any React:** are marketing surfaces in scope
    (`marketing-surfaces.md`), and which foundation to build on. Then proceed.
 8. **Choose the foundation**, then build React components. Put three options to the user:
    from scratch on headless primitives, adopt and theme Astryx, or build on shadcn/ui.
-   Only after the preview is approved. `delivery.md`, `components.md`,
+   Only after the preview is approved. `preview.md`, `components.md`,
    `build-architecture.md`
 9. **Enforcement layer before generated screens.** Registry, lint, layer boundaries,
    off-scale values that fail to compile. Generation before enforcement amplifies drift.
 10. **Storybook**, one story file per component, published to a URL.
 11. **Generate the system's own skill file** so designers and agents can use it without
-    rediscovering it. `delivery.md`
+    rediscovering it. `handoff.md`
 12. **Ship, instrument coverage, iterate.**
 13. **Held-out test.** Fresh agent, screenshot from a *different* product, existing
     components only. The deliverable is the inventory of what your system lacks.
@@ -168,8 +169,8 @@ components that consumed primitives means re-touching every state.
 | How many tokens? | ~40-80 primitive, ~60-120 semantic. Multi-brand grows the primitive layer, not the semantic one. |
 | Dark mode now or later? | Semantic layer designed for it now. Author values whenever. |
 | Dark base color? | Dark grey (`#121212` class), not pure black. True black only for a stated OLED need. |
-| How many hues? | **Decide hues before steps.** Brand and neutral get full ramps. Status hues get 3-4 steps each. A typical product is ~37 primitives, not 144. `color.md` |
-| Ramp depth, for hues that warrant a full ramp? | 10-12 steps, each with a documented purpose. Steal Radix's step mapping. **This is a purpose map, not a quantity instruction.** |
+| How many hues? | **Decide hues, then take the whole ramp for each.** Brand, neutral, and 3-4 status hues. ~60-85 primitives, not 144. `color.md` |
+| Ramp depth? | **Full 12 steps** for any hue that earns a ramp. Truncating means a missing state gets improvised. Radix's step map says what each is for. |
 | Color space? | OKLCH/LCH/HCT. Never build a ramp by eye in HSL. |
 | How many type roles? | 8-12 composite tokens, each bundling family, size, weight, line height. Not separate atomic tokens. |
 | Type scale ratio? | 1.125-1.2 for dense product UI. Larger ratios waste vertical space. Round to whole pixels. |
@@ -224,25 +225,6 @@ components that consumed primitives means re-touching every state.
 | Custom token names or Tailwind-aligned? | Align at the primitive tier unless you have a reason not to. |
 | Is `llms.txt` enough? | No. Use a registry or MCP the agent can query and act on. |
 | Stop agents shipping bad contrast? | Pair foreground/background tokens so an invalid combination cannot be expressed. |
-
----
-
-## Precedent: what to take from which system
-
-| System | Take this |
-|---|---|
-| **Radix Colors** | The 12-step ramp with a documented purpose per step. The most reusable artifact in the field. |
-| **Material 3** | Dark-mode methodology: lightness encodes elevation, the contrast headroom rule, tonal surfaces. |
-| **Blade (Razorpay)** | Coverage as the adoption metric. 1:1 Figma-prop to code-prop naming. Written API decision records. |
-| **Atlassian** | Motion tokens named by intent (`motion.popup.enter`), not by raw duration values. |
-| **Adobe Spectrum** | The architecture split: React Aria as the interaction engine, Spectrum as the visual layer. |
-| **Shopify Polaris** | B2B admin reference: data tables, filters, bulk actions, one token source to many outputs. |
-| **IBM Carbon** | Density and restraint defaults for dense enterprise software. |
-| **GitHub Primer** | Proof that a single-product system should stay simple. Match complexity to portfolio breadth. |
-
-Universal agreement across all of them: three token tiers, dark mode as authored values
-rather than inversion, headless primitives underneath, ARIA-aligned naming, and adoption
-measured rather than assumed.
 
 ---
 
