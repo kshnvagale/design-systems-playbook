@@ -22,7 +22,10 @@ platform, or a component whose visual identity diverges from the semantic layer 
 enough to cause churn.
 
 Adding it too early is the single most common over-engineering mistake (see Contested
-below). Start with two tiers, primitive to semantic. Promote a semantic token to a
+below). **Three tiers in the schema. The component tier starts empty and stays empty until
+two components must permanently diverge from the same semantic value. Components consume
+their own component tokens if any exist, otherwise semantic, never primitives. Designers
+pick from semantic only.** Promote a semantic token to a
 component token only when two different components need to diverge from the same semantic
 value.
 
@@ -57,6 +60,42 @@ sizing, and any number here defers to it.
 the growth in the primitive layer (more brand palettes) rather than the semantic layer.
 Semantic names should stay stable across brands. `color.md` covers how much headroom
 multi-brand actually needs.
+
+## When a component token earns its place
+
+Three cases, because the rule is easy to state and easy to over-apply.
+
+**No component token needed (the common case, ~90% of components).**
+
+```
+primitive   color.green.600          = #16A34A
+semantic    color.action.primary.rest = {color.green.600}
+
+Button uses  color.action.primary.rest
+Chip uses    color.action.primary.rest
+```
+
+Both consume the semantic token. The component tier stays empty.
+
+**A component token earns its place.** Design decides the Chip's selected fill should be
+permanently one step darker than the Button's. A standing decision, not a one-off.
+
+```
+(a)  color.action.secondary.rest = {color.green.700}   wrong: pollutes the semantic layer
+(b)  chip.background.selected    = {color.green.700}   right: component token
+```
+
+(a) is wrong because it is not a new *meaning*, it is the same meaning with a different
+value for one component. Do that ten times and the semantic layer has 200 tokens nobody can
+navigate.
+
+**Not a component token.** Button needs different padding on mobile. That is a variant or a
+responsive value. Component tokens exist only to diverge from the semantic layer, not to
+name every property a component has.
+
+**Why the tier exists from day one even while empty:** adding a tier later means
+restructuring the token file and every reference into it. Its emptiness is the signal you
+are doing it right, not evidence it should be deleted.
 
 ## Dark mode: do not invert, build a second value set
 

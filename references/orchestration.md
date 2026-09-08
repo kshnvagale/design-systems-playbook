@@ -59,10 +59,10 @@ components.
 
 | Agent | Owns exclusively | Returns |
 |---|---|---|
-| 1 | `ui/{button,icon-button,link,text,heading,icon}.tsx` + their stories | file paths, gaps hit |
-| 2 | `ui/{badge,status-dot,avatar,divider,spinner,skeleton}.tsx` + stories | same |
-| 3 | `ui/{checkbox,radio,switch,toggle-button,slider,progress-bar}.tsx` + stories | same |
-| 4 | `ui/{text-input,text-area,number-input,select,field}.tsx` + stories | same |
+| 1 | `ui/{button,icon-button,link,text,heading,icon}/` four-file shape | file paths, gaps hit |
+| 2 | `ui/{badge,status-dot,avatar,divider,spinner,skeleton}/` four-file shape | same |
+| 3 | `ui/{checkbox,radio,switch,toggle-button,slider,progress-bar}/` four-file shape | same |
+| 4 | `ui/{text-input,text-area,number-input,select,field}/` four-file shape | same |
 | **Orchestrator** | `tokens.json`, `registry.json`, the preview, all naming, reconciliation | - |
 
 Note what the orchestrator kept: every shared, single-writer artifact. Note what the agents
@@ -162,11 +162,14 @@ Inventory            orchestrator, or 2-3 agents on different surfaces
 Visual language      orchestrator decides, subagents may research
 Tokens               orchestrator authors, one writer
 Naming               orchestrator locks it before any component exists
+Preview 1            FAN OUT by section, orchestrator writes shell and stitches
+Gate 1               orchestrator with the user
+Preview 2            FAN OUT, templates only, if the user wants them
+Gate 2               orchestrator with the user
+Foundation choice    orchestrator with the user
+Enforcement          orchestrator wires it, before any generation
 Components           FAN OUT, 3-5 agents, exclusive file ownership
 Stories              FAN OUT, same ownership map
-Enforcement          orchestrator wires it, before generation begins
-Preview              orchestrator assembles
-Approval             orchestrator with the user
 Storybook            FAN OUT for story files, orchestrator for config
 Skill file           orchestrator generates
 Evaluation           a fresh, context-free agent, see evaluation.md
@@ -267,8 +270,11 @@ A component-authoring dispatch should be roughly this shape:
 
 ```
 Build exactly these files, and nothing else:
-  components/ui/<name>.tsx
-  components/ui/<name>.stories.tsx
+  components/ui/<name>/<name>.tsx          the implementation
+  components/ui/<name>/<name>.spec.md      decisions the API cannot express
+  components/ui/<name>/<name>.test.tsx     one behavioral check: states and a11y
+  components/ui/<name>/<name>.stories.tsx  CSF3, one story per variant and state
+  components/ui/<name>/index.ts            re-export
 
 Spec for this component (implement exactly, do not re-measure):
   <inline spec excerpt: anatomy, variants, states, tokens per part>
@@ -286,7 +292,7 @@ Constraints that will be checked:
 
 Return, in this exact shape:
   COMPLETED:
-    - <ComponentName> | variants: N | states: N | story: yes/no | a11y: pass/fail
+    - <ComponentName> | variants: N | states: N | spec: yes/no | story: yes/no | a11y: pass/fail
   GAPS:
     - <what was missing, and what you did instead of inventing it>
   FILES WRITTEN:
@@ -303,7 +309,7 @@ render correctly while doing it. Make reporting the gap the explicitly correct m
 
 ## When not to use subagents
 
-- Fewer than about eight components. The coordination overhead exceeds the gain.
+- Fewer than 6 components or 8 files. The coordination overhead exceeds the gain.
 - Anything requiring a consistent judgment call across items. Do it in one place.
 - The first component of a new pattern. Build one yourself, establish the shape, then fan
   out using it as the reference.

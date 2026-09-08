@@ -66,16 +66,16 @@ Text Input · Text Area · Number Input · Select · Slider · Kbd · Code · Pr
 #### MOLECULES (27)
 
 Field (label + input + help + error) · Button Group · **Toggle Button Group** ·
-Segmented Control · Avatar Group · Breadcrumbs · Pagination · **Tab List / Tab Group** ·
-**Accordion (Collapsible)** · Card · Clickable Card · Selectable Card · Alert · Banner ·
-Toast · Tooltip · Popover · Hover Card · Dropdown Menu · More Menu (overflow) ·
-Search Input · Stepper · Empty State · Chip / Tag · Date Input · Timestamp · Metadata List
+Segmented Control · Avatar Group · Breadcrumbs · Pagination · **Tabs** ·
+**Accordion** · Card · Clickable Card · Selectable Card · Alert · Banner ·
+Toast · Tooltip · Popover · Hover Card · Menu · More Menu (overflow) ·
+Search Input · Stepper · Empty State · Chip · Date Input · Timestamp · Metadata List
 
 #### ORGANISMS (16)
 
-App Shell · Top Nav · Side Nav · **Side Drawer** · **Bottom Sheet** · Dialog / Modal ·
+App Shell · Top Nav · Side Nav · **Side Drawer** · **Bottom Sheet** · Dialog ·
 Command Palette · Table · Data Table · List · Tree List · Toolbar · Carousel ·
-Calendar / Date Picker · File Upload · Typeahead / Combobox
+DatePicker · File Upload · Combobox
 
 #### LAYOUT PRIMITIVES (6)
 
@@ -298,7 +298,7 @@ work as plain DOM and CSS before a framework abstraction hides a problem.
 The list above is a **floor, not a ceiling.** It is derived from two sources:
 
 **Meta's Astryx** ([astryx.atmeta.com/components](https://astryx.atmeta.com/components)),
-a real shipping system with roughly 90 components across Action, Chat, Container, Content,
+a real shipping system with 150+ components (the public components index lists a browsable subset) across Action, Chat, Container, Content,
 Data Input, Feedback and Status, Layout, Navigation, Overlay, Table and List, and Utility.
 
 **Component prevalence data** across published systems (see `components.md`).
@@ -313,8 +313,11 @@ Two things worth noticing about Astryx:
   inventory-driven building: the canonical list is the minimum, and domain components go on
   top of it. A payments company ships an `Amount`; a health product ships a vitals display.
 
-Add what your interface inventory found. Never subtract from the floor without saying so
-and getting agreement.
+Add what your interface inventory found. **Subtracting is allowed and often correct** -
+review the list item by item and record one line for anything you exclude. See
+`components.md`, which is the single source for the inventory and explains the review
+procedure. A ten-component internal tool should end up excluding most of this list, with
+reasons.
 
 ---
 
