@@ -23,7 +23,7 @@ system decision, and it will not survive contact with a developer or an agent.
 
 **How many type roles?** Not how many sizes. A role is a named, complete text style with
 a purpose (`display`, `headline`, `title`, `body`, `bodyEmphasized`, `label`, `caption`).
-Most products need 8-12. Material 3 ships around 15 across five families. Fewer than 6 and
+Most products need 8-12. Material 3 ships 15 base roles across five families, about 30 once the 2025 emphasized variants are counted. Fewer than 6 and
 designers will start overriding; more than about 15 and nobody can remember which is
 which.
 

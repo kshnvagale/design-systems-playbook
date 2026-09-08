@@ -16,6 +16,13 @@ Building serially in one session is a failure mode, not a safe conservative choi
 
 A full inventory build is roughly 70 components. That is not a serial job.
 
+**If subagents are unavailable, or the user has not opted into the cost**, do not pretend
+otherwise and do not silently burn budget. Say so, then build serially in **checkpointed
+batches of 3-5 components**, updating `PROGRESS.md` after each batch so the work survives a
+context reset. That is slower and quality still degrades on later batches, but it is honest
+and resumable. A full build is roughly 60-75 dispatches; that is a real cost and the user
+should agree to it before you start.
+
 **Announce the plan before dispatching.** Tell the user which agents you are creating, what
 each one owns, and what comes back. Then dispatch.
 
@@ -72,8 +79,8 @@ Then the next batch does molecules, the next does organisms. Layer order matters
 molecules import atoms and organisms import both.
 
 A full canonical inventory (24 atoms, 27 molecules, 16 organisms, 6 layout primitives) is
-roughly 15 agent-batches of 4-5. Plan for that shape rather than discovering it at
-component 12.
+roughly **4 batches of 4-5 agents, each agent owning 5-6 components**. Plan for that shape
+rather than discovering it at component 12.
 
 
 **The orchestrator owns the user relationship, every shared artifact, and every decision.

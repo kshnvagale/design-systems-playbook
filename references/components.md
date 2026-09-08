@@ -185,8 +185,7 @@ dependency direction. Same components, two indexes.
 System Message) because Meta builds AI products. That is the clearest possible evidence for
 inventory-driven building: nothing generic would suggest those, and they exist because the
 real product needed them. A payments company ships an `Amount`. A health product ships a
-vitals display. **The canonical list is the minimum; your interface inventory supplies the
-rest.**
+vitals display. **Your interface inventory decides scope. The canonical list decides that you noticed.**
 
 ### Inventory versus build order: do not confuse them
 
@@ -209,14 +208,17 @@ consumer. See `naming.md`, especially the ARIA-alignment rules for the contested
 
 ## A defensible build order
 
+**Every name below resolves to an entry in the canonical inventory above.** If you add a
+tier entry, add the component to the inventory first. Names follow `naming.md`: no slashes.
+
 **Tier 1 (build first, roughly 12-16 components).** High-frequency, low-ambiguity, and
 each has a matching WAI-ARIA APG pattern to build against rather than improvising:
-Button, Text input, Checkbox, Radio, Select/Listbox, **Badge**, Card, Modal/Dialog,
-Tabs, Tooltip, **Alert**, Link, Spinner, Icon Button, Divider/Separator, Avatar.
+Button, Text input, Checkbox, Radio, Select, **Badge**, Card, Dialog,
+Tabs, Tooltip, **Alert**, Link, Spinner, Icon Button, Divider, Avatar.
 
 **Tier 2 (once tier 1 is stable and actually adopted).** Mostly compositions of tier-1
 primitives: **Accordion**, Table (basic, sortable), Pagination, Breadcrumbs, Dropdown
-Menu, Toast, Toggle/Switch, Progress bar, Skeleton, Empty state, Banner, Textarea, Form
+Menu, Toast, Switch, Progress bar, Skeleton, Empty state, Banner, Textarea, Form
 field wrapper (label + input + error + helper text composed as one unit), Segmented
 control, Popover, Drawer.
 

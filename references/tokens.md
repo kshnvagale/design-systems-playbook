@@ -51,7 +51,10 @@ There is real disagreement here, captured directly from practitioners on r/Desig
   references primitives directly and nothing can be themed cleanly.
 
 **Practical target for a single-brand, single-platform system at 10k+ users:** roughly
-60-85 primitives and 60-120 semantic tokens, with component tokens added only as needed.
+60-85 **colour** primitives (see `color.md`, the single source) plus roughly 40-60
+non-colour primitives from the scales below, and 60-120 semantic tokens. Component tokens
+added only as needed. A full system total near 110-150 primitives is normal and is not a
+signal to truncate ramps.
 
 See `color.md` for how the primitive count is derived. It is the single source for palette
 sizing, and any number here defers to it.
@@ -158,14 +161,16 @@ slate, blend a low-opacity version of your primary color into the dark base: `#1
 8% primary gives a branded dark base, per Material.
 
 A practitioner case study reproduced this exactly for a fintech ("Tenet UI"): base dark
-background `#09111A` chosen so pure white text still hits 15.8:1, giving headroom for every
-lighter elevation step to still pass 4.5:1
+background `#09111A`, which puts pure white text at roughly 19:1
 ([fourzerothree.in/p/scalable-accessible-dark-mode](https://www.fourzerothree.in/p/scalable-accessible-dark-mode)).
 
-**5. The 15.8:1 rule.** Material's justification for how dark a base surface must be: white
-text needs at least 15.8:1 contrast against the *deepest* background so that at the
-*lightest* (most elevated) surface, contrast still clears WCAG AA's 4.5:1 floor. Work
-backward from your highest elevation surface, not forward from your base.
+**5. The 15.8:1 figure.** Material states this as a requirement for dark surfaces carrying
+100% white body text. **Treat it as Material's stated floor, not as a derived one.** The
+tempting derivation - that you need 15.8:1 at the base so the most elevated surface still
+clears 4.5:1 - does not hold arithmetically: `#121212` with the 16% white overlay at 24dp
+gives `#383838`, which is 11.73:1 against white, far above 4.5. The real reasons to start
+dark are elevation headroom and reduced eye strain. Work backward from your highest
+elevation surface anyway, but do not justify it with that number.
 
 **6. "On" colors carry hierarchy via opacity, not new hues.** Material's dark theme text
 hierarchy: high-emphasis text at 87% white opacity, medium and hint at 60%, disabled at
