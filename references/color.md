@@ -1,26 +1,5 @@
 # Color palette construction and accessibility reference
 
-## The Radix 12-step model (the single most useful artifact in this space)
-
-Radix Colors documents an exact, per-step semantic purpose for every step in a 12-step scale. This is worth adopting close to verbatim - it answers "how many steps" and "what is step N for" in one table. Source: [radix-ui.com/colors/docs/palette-composition/understanding-the-scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
-
-| Step | Use case |
-|---|---|
-| 1 | App background |
-| 2 | Subtle background |
-| 3 | UI element background (normal state) |
-| 4 | Hovered UI element background |
-| 5 | Active / selected UI element background |
-| 6 | Subtle borders and separators (non-interactive: sidebars, headers, cards, alerts) |
-| 7 | UI element border and focus rings (interactive, subtle) |
-| 8 | Hovered UI element border (interactive, stronger) |
-| 9 | Solid backgrounds - this is the **purest step**, least mixed with white/black, used for brand surfaces, logos, colored shadows, accent borders |
-| 10 | Hovered solid backgrounds (hover state for step-9 surfaces) |
-| 11 | Low-contrast text |
-| 12 | High-contrast text |
-
-Steps 1-2 are backgrounds, 3-5 are component backgrounds by state (rest/hover/pressed), 6-8 are borders by strength/interactivity, 9-10 are solid/brand fills, 11-12 are text. **This step-to-purpose mapping is more valuable than the step count itself** - copy the mapping even if you settle on a different number of steps.
-
 ## Generate only the color you need
 
 Before deciding how many steps, decide how many **hues**. The default instinct is to
@@ -77,6 +56,76 @@ A model given 144 color tokens will use more of them than a model given 40. Cons
 the option set is one of the few reliable ways to constrain output, and it costs nothing.
 The same logic runs through this skill: a coarse spacing scale, a small component
 allowlist, off-scale values that fail to compile.
+
+### What a real generated palette looks like
+
+Abstract rules lose to concrete tables, so here is the concrete table:
+
+```
+brand        12 steps   full ramp, the only hue that needs all of them
+neutral      12 steps   full ramp, used more than everything else combined
+success       3 steps   surface, border, content
+warning       3 steps   surface, border, content
+danger        4 steps   surface, border, content, plus hover for destructive actions
+info          3 steps   surface, border, content
+------------------------------------------------------------------
+              37 primitives
+```
+
+Compare: six hues at twelve steps each would be 72. A twelve-hue matrix would be 144. The
+right answer for a typical single-brand product is **37**.
+
+### The generation procedure
+
+Follow this order. Generating first and rationalizing after is what produces a full
+spectrum.
+
+1. **Write the semantic token list first.** Surface, content, border, action, feedback
+   families.
+2. **For each semantic token, note which primitive it must resolve to.**
+3. **Generate only those primitive steps.**
+4. **If a hue ends up with fewer than three steps, it is a single value, not a ramp.**
+   Do not pad it out to look like one.
+5. **Count the result and state it out loud before building anything.** Over roughly 50
+   primitives for a single-brand product means something is being generated
+   speculatively.
+
+### The self-check
+
+Before moving on, answer this for every primitive you generated:
+
+> **Which semantic token points at this?**
+
+Any primitive with no answer should not exist. Delete it. This single question catches the
+full-spectrum failure faster than any amount of guidance about restraint, because it is
+answerable per-token rather than in the abstract.
+
+
+## What each step is for: the Radix purpose map
+
+**This is a purpose map, not a quantity instruction.** It tells you what a step is FOR, so
+that when you do generate one you know its job. It does not mean every hue gets twelve
+steps. Decide how many hues and how deep each goes using the section above, then use this
+table to assign purpose to the steps you actually generate.
+
+Radix Colors documents an exact, per-step semantic purpose for every step in a 12-step scale. This is worth adopting close to verbatim - it answers "how many steps" and "what is step N for" in one table. Source: [radix-ui.com/colors/docs/palette-composition/understanding-the-scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
+
+| Step | Use case |
+|---|---|
+| 1 | App background |
+| 2 | Subtle background |
+| 3 | UI element background (normal state) |
+| 4 | Hovered UI element background |
+| 5 | Active / selected UI element background |
+| 6 | Subtle borders and separators (non-interactive: sidebars, headers, cards, alerts) |
+| 7 | UI element border and focus rings (interactive, subtle) |
+| 8 | Hovered UI element border (interactive, stronger) |
+| 9 | Solid backgrounds - this is the **purest step**, least mixed with white/black, used for brand surfaces, logos, colored shadows, accent borders |
+| 10 | Hovered solid backgrounds (hover state for step-9 surfaces) |
+| 11 | Low-contrast text |
+| 12 | High-contrast text |
+
+Steps 1-2 are backgrounds, 3-5 are component backgrounds by state (rest/hover/pressed), 6-8 are borders by strength/interactivity, 9-10 are solid/brand fills, 11-12 are text. **This step-to-purpose mapping is more valuable than the step count itself** - copy the mapping even if you settle on a different number of steps.
 
 ## How many steps, and why systems disagree
 

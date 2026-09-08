@@ -71,7 +71,8 @@ for components that do not exist.
 | `references/governance.md` | Team models, contribution, adoption, why systems die |
 | `references/ai-agents.md` | Agent-consumable delivery, enforcement, specs-as-data, Figma's real position |
 | `references/orchestration.md` | Running the build with subagents: what to parallelize, ownership, verification |
-| `references/delivery.md` | HTML preview spec, approval gate, Storybook requirements, the generated skill file |
+| `references/delivery.md` | Two-gate flow: base-system preview, then templates. Storybook, generated skill file |
+| `references/marketing-surfaces.md` | Landing pages, the brand/product seam, marketing components and token extensions |
 | `references/evaluation.md` | Whether the system works, and whether it is sufficient |
 
 Read the file for the decision in front of you. Do not preload all of them.
@@ -124,15 +125,20 @@ fields" passes.
 2. **Interface inventory** of the live product, cross-disciplinary, time-boxed.
 3. **Visual language.** Type roles and scale, grid and breakpoints, density per surface,
    icon grid and stroke, motion intent, voice. Do this *with* tokens, not after.
-4. **Primitive plus semantic tokens, light mode first.** ~40-80 primitives, ~60-120 semantic.
+4. **Semantic tokens first, then generate only the primitives they point at.** Light mode
+   first. ~40-80 primitives, ~60-120 semantic. **Read `color.md` before generating any
+   ramp**, and count your primitives out loud before building. Over ~50 for a
+   single-brand product means something is speculative.
 5. **Lock naming.** Renaming after adoption is a breaking change.
 6. **Dark mode as a second authored value set**, never an inversion. Needed before the
    preview, because the preview must ship a working theme toggle.
-7. **Single HTML preview containing the COMPLETE component inventory**, organized in
-   atomic layers (foundations, atoms, molecules, organisms, layout primitives, pages),
-   fully interactive with motion running. **Then get explicit approval.**
-   This is where completeness is proven. If a component is not in the HTML, it will be
-   forgotten. `delivery.md`
+7. **HTML preview 1: the base system only** (foundations, atoms, molecules, organisms,
+   layout primitives). **No page templates.** Fully interactive with motion running.
+   **Then approval gate 1.** This is where completeness is proven. If a component is not
+   in the HTML, it will be forgotten. `delivery.md`
+7a. **Ask whether they want page templates, and collect input.** Page list, screenshots,
+   references, real content. The answer may be no. Then **HTML preview 2** and
+   **approval gate 2**. A template may never introduce a new component. `delivery.md`
 8. **Choose the foundation**, then build React components. Put three options to the user:
    from scratch on headless primitives, adopt and theme Astryx, or build on shadcn/ui.
    Only after the preview is approved. `delivery.md`, `components.md`,
@@ -159,7 +165,8 @@ components that consumed primitives means re-touching every state.
 | How many tokens? | ~40-80 primitive, ~60-120 semantic. Multi-brand grows the primitive layer, not the semantic one. |
 | Dark mode now or later? | Semantic layer designed for it now. Author values whenever. |
 | Dark base color? | Dark grey (`#121212` class), not pure black. True black only for a stated OLED need. |
-| Color ramp steps? | 10-12, each with a documented purpose. Steal Radix's step mapping. |
+| How many hues? | **Decide hues before steps.** Brand and neutral get full ramps. Status hues get 3-4 steps each. A typical product is ~37 primitives, not 144. `color.md` |
+| Ramp depth, for hues that warrant a full ramp? | 10-12 steps, each with a documented purpose. Steal Radix's step mapping. **This is a purpose map, not a quantity instruction.** |
 | Color space? | OKLCH/LCH/HCT. Never build a ramp by eye in HSL. |
 | How many type roles? | 8-12 composite tokens, each bundling family, size, weight, line height. Not separate atomic tokens. |
 | Type scale ratio? | 1.125-1.2 for dense product UI. Larger ratios waste vertical space. Round to whole pixels. |
@@ -172,6 +179,9 @@ components that consumed primitives means re-touching every state.
 | Where can delight go? | Onboarding, empty states, success, micro-feedback. **Never** on an error, decline, or destructive confirm. |
 | Adding a microinteraction? | Name the uncertainty it resolves for the user. If you cannot, it is decoration. Feedback weight matches stakes. |
 | Ask for the logo? | **Always, explicitly.** SVG, all lockups, and a dark-background version. A one-color logo breaks in dark mode. |
+| Marketing site in scope? | Ask in discovery. Shared primitives, **extended** type and spacing scales, separate component set. `marketing-surfaces.md` |
+| Product type scale for a landing page? | **No.** Product tops out ~40px; marketing needs display roles above that. Extend the scale, never fork it. |
+| Build page templates? | **Ask after gate 1.** Collect page list, screenshots, real content. The answer may be no. |
 | Ask for component style refs? | **Yes, separately from moodboard.** "Send me buttons, inputs, cards you like." Illustration style is a different question. |
 | Storybook before or after approval? | After. Preview in one HTML file, get a yes, then build Storybook. |
 | Component done when? | It has a story per variant and per state, controls on every prop, a `play` function if interactive, and passes a11y. |
@@ -179,7 +189,7 @@ components that consumed primitives means re-touching every state.
 | Use subagents? | **Yes, by default,** past ~6 components or ~8 files. Serial building is a failure mode, not a safe choice. |
 | Parallelize what? | Components, stories, research, audits, **and the HTML preview sections**. Never tokens, registry, or naming. |
 | Fan out one big file? | Yes. Orchestrator writes the shell, agents return **fragments**, orchestrator stitches. Agents never write the file. |
-| Generate the full color spectrum? | **No.** Roughly 2 full ramps (brand, neutral) plus 3-4 steps per status hue. Availability is permission. |
+| Generate a primitive with no semantic token pointing at it? | **Never.** Ask "which semantic token uses this?" for every primitive. No answer means it should not exist. |
 | Build on what? | Ask. From scratch on headless primitives, Astryx (MIT, 150+ components, themeable), or shadcn/ui. |
 | What goes in the HTML preview? | **Everything.** The full inventory by atomic layer. Deferring a component in the React build order never means omitting it here. |
 | Which components are required? | The canonical inventory in `components.md`: 24 atoms, 27 molecules, 16 organisms, 6 layout primitives. Domain components on top. |
@@ -240,7 +250,12 @@ measured rather than assumed.
   to theme.
 - Picking a brand hue without checking it can serve as an accessible interactive color.
 - **Generating the full color spectrum because the tool made it free.** Every unused ramp
-  is an invitation, and surplus color becomes a license to improvise.
+  is an invitation, and surplus color becomes a license to improvise. Decide hues before
+  steps, and ask which semantic token points at each primitive.
+- **Building page templates before the base system is approved.** They get rebuilt every
+  time a component changes, and nobody asked which pages they wanted.
+- **Using the product type and spacing scales for a landing page**, producing a marketing
+  page that reads like an admin screen.
 - **Asking only for illustration references and calling that visual direction.** Component
   styling is a separate ask, and most of the system is components.
 - Building the UI palette and the data-viz palette as one thing.

@@ -4,12 +4,17 @@ The order is deliberate and non-negotiable:
 
 ```
 foundations + tokens
-  -> ONE HTML FILE, complete inventory, atomic layers, fully interactive
-  -> USER APPROVAL
-  -> React components
-  -> Storybook
-  -> generated skill file
+  -> PREVIEW 1: the base system (no page templates)
+  -> APPROVAL GATE 1: is the system right?
+  -> ASK: do you want page templates? which ones? collect input
+  -> PREVIEW 2: page templates, built only from approved components
+  -> APPROVAL GATE 2: are the templates right?
+  -> foundation choice -> React -> Storybook -> generated skill file
 ```
+
+**Two gates, not one.** Page templates are a separate concern from the system itself. A
+team that ran this with a single gate got templates built in the same pass as the system,
+before anyone had said which pages they wanted or supplied a single screenshot.
 
 **The HTML comes before React, and it contains everything.** Two separate reasons, and
 both matter:
@@ -76,11 +81,14 @@ Calendar / Date Picker · File Upload · Typeahead / Combobox
 
 Stack · Grid · Section · Container · Aspect Ratio · Resize Handle
 
-#### PAGES (2-3)
+#### ONE COMPOSED SCREEN (not templates)
 
-Fully composed real screens assembled from everything above. Components in isolation
-always look fine. A composed screen is where slot collisions, density mistakes, and
-genuinely missing components become visible.
+Exactly one realistic assembled screen, as a **sanity check on the system**, not as a
+template deliverable. Components in isolation always look fine; one composed screen is
+where slot collisions, density mistakes, and genuinely missing components become visible.
+
+**Page templates are not part of preview 1.** They come after gate 1, with their own
+input and their own gate. See below.
 
 ### The tier-3 exemption trap, closed explicitly
 
@@ -310,7 +318,7 @@ and getting agreement.
 
 ---
 
-## 3. The approval gate
+## 3. Approval gate 1: the base system
 
 Present the preview and ask for a decision, not for vague feedback:
 
@@ -324,8 +332,53 @@ Present the preview and ask for a decision, not for vague feedback:
 density is wrong," fix it in the HTML and re-present. Iterating one HTML file is cheap.
 Iterating 70 React components is not.
 
+Add one more, because this is the last cheap moment for it:
+
+5. **Are the component names right?** Renaming after React exists is a breaking change
+   touching every consumer. Here it is a find and replace.
+
 Record the approval. It is the point at which the visual language and the scope both stop
 being negotiable and become a contract.
+
+---
+
+## 3a. Ask about page templates. Do not assume.
+
+Once gate 1 passes, **ask**. Do not start building pages.
+
+> The base system is approved. Do you want me to build page templates on top of it?
+>
+> If yes, I need three things: the list of pages or screens you want, any screenshots or
+> references for each, and real content where you have it. Real product names, real copy
+> lengths, real numbers. Templates built on placeholder content break the moment real
+> content arrives.
+
+**The answer may legitimately be no.** Some teams want the system and will compose pages
+themselves. Building templates nobody asked for is exactly the failure this split exists to
+prevent.
+
+### Preview 2: templates only
+
+Built strictly from approved components, in the same two-pane shell, same fan-out method.
+
+**The hard rule: a template may not introduce a new component.** If a page needs something
+the system does not have, that is a system gap to report and add deliberately, then
+regenerate. It is not license to invent inside a template. This is the reuse-over-invention
+rule applied one layer up, and it is the rule most likely to be broken under deadline,
+because a template feels like a one-off.
+
+### Approval gate 2: the templates
+
+Different questions from gate 1. Ask these:
+
+1. Does this page do its job? What is the one action you want a user to take here?
+2. Is the content hierarchy right? Is the most important thing the most prominent thing?
+3. Is anything missing from the flow, as opposed to missing from the system?
+4. Does it hold up with your real content lengths, not the placeholder ones?
+
+**Why the ordering matters:** templates built after approval get built once. Templates
+built before it get rebuilt every time a component changes, which during a first build is
+constantly.
 
 ---
 
