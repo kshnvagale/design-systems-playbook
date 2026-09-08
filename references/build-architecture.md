@@ -18,6 +18,7 @@ components/ui/button/
 ├── button.tsx          the implementation
 ├── button.spec.md      the decisions the API cannot express
 ├── button.test.tsx     one behavioral check: states and a11y
+├── button.stories.tsx  one story per variant and state
 └── index.ts            re-export
 ```
 
@@ -267,7 +268,7 @@ query is the mechanism with evidence behind it.
 
 ## Contested
 
-- **Uniform file shape has real ceremony cost.** Four files per component is heavy for a
+- **Uniform file shape has real ceremony cost.** Five files per component is heavy for a
   system with 12 components and a single maintainer. Below roughly 20 components, folding
   the spec into a docs comment or a Storybook docs page is defensible. Above that, the
   uniformity pays for itself. Know which side of the line you are on rather than adopting

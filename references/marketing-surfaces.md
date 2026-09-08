@@ -82,8 +82,8 @@ authenticated app, which raises the stakes on the semantic-heading gate in
 **Extended for marketing, not replaced:**
 
 - **Type scale.** Product needs roughly 8-12 roles topping out near 40px. Marketing adds
-  display roles above that: `display.sm`, `display.md`, `display.lg`, `display.xl`. Same
-  family, same ratio, extended upward. Do not fork the scale; extend it.
+  display roles above that: `display.{sm,md,lg,xl}`. Same family, same ratio, extended
+  upward. Do not fork the scale; extend it.
 - **Spacing.** Add section-level steps (`space.64`, `space.96`, `space.128`, `space.160`)
   above the product scale. Same base unit, longer tail.
 - **Motion.** This is where the productive/expressive split in `visual-language.md` earns
