@@ -99,6 +99,64 @@ is a fork, and you now have two systems whether you admit it or not.
 
 ---
 
+## When marketing work happens in the sequence
+
+Two different answers, because tokens and components are on different clocks.
+
+**Token extensions happen in the token phase, with the primitives.** If marketing is in
+scope at discovery, extend the type and spacing scales in step 4 alongside everything else.
+Do not defer them. The scales are one artifact, and extending them later means re-running
+the token build, re-checking contrast on the new steps, and re-authoring anything that was
+built against the shorter scale. It costs almost nothing to add display roles and section
+spacing while you are already there.
+
+**Marketing components happen after the product system is approved**, as a distinct phase
+with its own preview and its own gate. They are organisms composed from approved atoms and
+molecules, so they cannot be built before those exist.
+
+The sequence:
+
+```
+step 4  tokens        primitives + product scales + marketing scale EXTENSIONS
+step 7  preview 1     base product system            -> gate 1
+step 7a preview 2     page templates (if wanted)     -> gate 2
+step 7b preview 3     marketing surfaces (if in scope) -> gate 3
+```
+
+**If marketing was not in scope at discovery and arrives later**, extend the existing
+scales rather than forking them. That is a retrofit, and it is mildly annoying. Forking is
+not annoying, it is permanent.
+
+## Separate or merged: keep them separate, sharing a core
+
+**Separate package or directory, importing from the shared core.** Not merged into the
+product component set.
+
+```
+packages/
+  tokens/           shared primitives, product scales, marketing extensions
+  ui-core/          Button, Link, Icon, Card, Input, Accordion, Grid, Stack
+  ui-product/       product organisms: DataTable, CommandPalette, AppShell
+  ui-marketing/     Hero, PricingTable, LogoWall, CTABand, MarketingFooter
+```
+
+Four reasons this beats merging:
+
+1. **Bundle.** The product app should not ship a Pricing Table. Marketing should not ship
+   a Data Table. Separate packages make that automatic rather than a tree-shaking hope.
+2. **Dependency direction stays legible.** Both import from `ui-core`; neither imports the
+   other. That is enforceable with the boundary audit in `build-architecture.md`. A merged
+   set has no such line to draw.
+3. **Different review bars.** A marketing component is often used once and can ship at 90%.
+   A product component is used in 200 places and cannot. Merging averages the two bars,
+   usually downward.
+4. **Different owners in most orgs.** When brand sits under marketing, separate packages
+   mean separate ownership without separate tokens.
+
+**What must not be separate:** the token layer and `ui-core`. One brand hue, one neutral
+ramp, one icon set, one Button. The moment marketing has its own Button, the seam at
+sign-up becomes visible and no amount of token sharing hides it.
+
 ## Marketing component inventory
 
 An **addition** to the canonical inventory in `components.md`, not a replacement. Same

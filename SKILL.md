@@ -44,6 +44,7 @@ The artifact set, in build order:
 | **Docs** | A page per component: anatomy, live example, props table, all states, a11y notes, content guidance, do/don't. | A new engineer can use a component without asking anyone |
 | **Generated skill file** | **One file**, part generated (allowlist, tokens, scales, so it cannot drift) and part hand-written (philosophy, judgment calls). States the Storybook URL as source of truth and the never-invent rules. Also shipped as `AGENTS.md`. | Regenerating is one command, and a cold agent builds a compliant screen from it |
 | **Verification** | Held-out test result with an objective score. A gap inventory. Coverage baseline instrumented. | You know what your system is missing, in writing |
+| **Throughout** | **`PROGRESS.md`**, created once the inventory is settled and updated at every batch and gate. Orchestrator writes it; subagents report and it ticks after verifying. | A fresh session can resume from one file |
 
 **Definition of done for v1:** someone who was not involved in building it can produce a
 new screen entirely from the system, CI blocks a raw hex, the held-out test scores above
@@ -139,6 +140,8 @@ fields" passes.
 7a. **Ask whether they want page templates, and collect input.** Page list, screenshots,
    references, real content. The answer may be no. Then **HTML preview 2** and
    **approval gate 2**. A template may never introduce a new component. `delivery.md`
+7b. **After gate 2, ask two things before any React:** are marketing surfaces in scope
+   (`marketing-surfaces.md`), and which foundation to build on. Then proceed.
 8. **Choose the foundation**, then build React components. Put three options to the user:
    from scratch on headless primitives, adopt and theme Astryx, or build on shadcn/ui.
    Only after the preview is approved. `delivery.md`, `components.md`,
@@ -182,6 +185,10 @@ components that consumed primitives means re-touching every state.
 | Marketing site in scope? | Ask in discovery. Shared primitives, **extended** type and spacing scales, separate component set. `marketing-surfaces.md` |
 | Product type scale for a landing page? | **No.** Product tops out ~40px; marketing needs display roles above that. Extend the scale, never fork it. |
 | Build page templates? | **Ask after gate 1.** Collect page list, screenshots, real content. The answer may be no. |
+| What comes after gate 2? | **Ask two things:** marketing surfaces in scope, and which foundation to build on. Then React. |
+| Track progress how? | `PROGRESS.md` with a checkbox per inventory item. **Orchestrator ticks it, subagents never write to it.** |
+| When do marketing tokens get built? | **With the primitives, in the token phase.** Marketing *components* come later, after the product system is approved. |
+| Marketing components merged with product? | **No.** Separate package importing a shared core. One Button, one icon set, separate organisms. |
 | Ask for component style refs? | **Yes, separately from moodboard.** "Send me buttons, inputs, cards you like." Illustration style is a different question. |
 | Storybook before or after approval? | After. Preview in one HTML file, get a yes, then build Storybook. |
 | Component done when? | It has a story per variant and per state, controls on every prop, a `play` function if interactive, and passes a11y. |

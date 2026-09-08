@@ -92,6 +92,9 @@ Subagents own bounded, non-overlapping implementation work and report back.**
   independently produces five vocabularies.
 - **The approval gate.** Never let a subagent decide the preview is good enough.
 - **Reconciliation.** When returns conflict, the orchestrator resolves.
+- **`PROGRESS.md`.** One file every agent in a batch would otherwise touch at once.
+  Concurrent read-modify-write on markdown loses updates silently. Agents report, the
+  orchestrator ticks. See `delivery.md`.
 
 Rule of thumb: **if two agents could write the same file, only the orchestrator writes it.**
 
@@ -281,7 +284,15 @@ Constraints that will be checked:
   - if you need something that does not exist, STOP and report it as a gap.
     Do not invent it.
 
-Return: the file paths you wrote, and any gap you hit. Write no other files.
+Return, in this exact shape:
+  COMPLETED:
+    - <ComponentName> | variants: N | states: N | story: yes/no | a11y: pass/fail
+  GAPS:
+    - <what was missing, and what you did instead of inventing it>
+  FILES WRITTEN:
+    - <paths>
+Write no other files. Do not edit PROGRESS.md; the orchestrator ticks it after
+verifying your output.
 ```
 
 The last two lines matter most. **An agent that hits a missing component and improvises one
