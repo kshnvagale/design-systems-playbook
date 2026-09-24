@@ -260,6 +260,10 @@ this table, apply that test to the row you touched.
 | Custom token names or Tailwind-aligned? | Align at the primitive tier unless you have a reason not to. |
 | Is `llms.txt` enough? | No. Use a registry or MCP the agent can query and act on. |
 | Stop agents shipping bad contrast? | Pair foreground/background tokens so an invalid combination cannot be expressed. |
+| px or rem? | **Per token type, not once.** Font size, spacing-around-text, breakpoints -> rem. Borders, radius, shadows -> px. `tokens.md` |
+| Full-height layout on mobile? | `svh` or `dvh`, never `100vh`. `mobile-web.md` |
+| Component layout on mobile? | Container queries by default, viewport queries for page-level only. `mobile-web.md` |
+| Touch target size? | 44x44 default, 24x24 absolute floor with a documented reason. `mobile-web.md` |
 
 ---
 

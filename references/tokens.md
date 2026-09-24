@@ -280,6 +280,108 @@ is what ships and what CI can lint. Figma-first works only if you have a reliabl
 pipeline (native DTCG export, or Tokens Studio) feeding Style Dictionary. Otherwise design
 and code silently drift.
 
+## px or rem: decide per token type, not once for the whole system
+
+This is not a single decision. Josh Comeau's mental model is the right one and it resolves
+most of the disagreement in this space:
+
+> **Should this value scale up when the user increases their browser's default font size?**
+> If yes, use `rem`. If no, use `px`.
+> ([joshwcomeau.com](https://www.joshwcomeau.com/css/surprising-truth-about-pixels-and-accessibility/))
+
+Two separate accessibility mechanisms are in play, and conflating them is the source of
+most bad advice on this topic:
+
+- **Browser zoom** (Cmd/Ctrl +) scales *everything*, `px` included. All major browsers have
+  done this for years. This is what WCAG 2.2 SC 1.4.4 (Resize Text) actually requires:
+  content must be usable at 200% zoom. **`px` does not fail SC 1.4.4** on its own, because
+  zoom already satisfies it.
+- **The browser's default font-size setting** (separate from zoom, in browser settings) only
+  rescales `rem`, `em`, and `%`-based values. `px` values ignore it entirely. This is the
+  real accessibility gap `rem` closes: a user who sets a larger default size, rather than
+  zooming per site, gets nothing from `px` text.
+
+**SC 1.4.10 (Reflow)** is a separate requirement and does not depend on the unit choice: content
+must reflow without two-directional scrolling at a 320px-equivalent viewport (400% zoom on a
+1280px start). Get this from responsive layout, not from a unit decision.
+
+### The per-token-type table
+
+| Token type | Unit | Reason |
+|---|---|---|
+| Font size | `rem` | Must respect the user's default font-size setting, not just zoom |
+| Line height | Unitless (`1.5`, not `1.5rem`) | Scales with whatever font-size it is paired with, avoids compounding |
+| Spacing between text elements (vertical rhythm) | `rem` | Should grow with text size, or larger text starts touching |
+| Spacing / padding / margin / gap (general layout) | `rem`, evaluated per case | See below; often `rem` for proportional scaling, occasionally `px` for fixed layout |
+| Border width | `px` | A border should not thicken as text scales; 1px should stay 1px |
+| Border radius | `px` | A visual shape decision, not tied to reading comfort |
+| Icon size | `px` or a fixed `rem` matched to its paired text size | Icons should track their label's size, not the user's global preference independently |
+| Shadow offsets/blur | `px` | Purely visual, should not scale with text |
+| Media query / container query breakpoints | `rem` | See the media-query case below; this is the case most people get backwards |
+| Max-width for text containers | `ch` where measuring line length, `rem` otherwise | `ch` ties directly to the actual character count on screen |
+
+**Media queries in `rem`, not `px`, and this is the counterintuitive one.** If a user sets
+a larger default font size, a `rem`-based breakpoint shifts *lower* in pixel terms, meaning
+they see the more spacious mobile-style layout sooner. That is correct: a user with larger
+text has less effective horizontal space for text before it crowds, the same problem a
+narrower viewport has. A `px`-based breakpoint ignores this and can leave someone with a
+large font size stuck in a cramped desktop layout on a laptop screen. (The historical Safari
+bug where `em`-based media queries computed against the wrong base is specific to `em`, not
+`rem`, and is no longer a practical concern in evergreen browsers.)
+
+**Spacing is the genuinely contested one, decided case by case.** `rem` spacing grows with
+text size, which is usually right for spacing *around and between text* (a paragraph's
+margin) and can be wrong for spacing that defines a *fixed layout shape* (a button's fixed
+width, a card's internal grid gap when the content is icons, not text). Ask Comeau's
+question per case: if enlarged text should get breathing room, `rem`; if the shape should
+stay put and text should wrap or truncate within it, `px`.
+
+### What production systems actually ship
+
+| System | Spacing/type unit |
+|---|---|
+| Tailwind v4 | `rem`, via a single `--spacing` multiplier (`--spacing: 0.25rem`, so `p-4` = `1rem`) |
+| Radix Themes | `rem`-based scale |
+| Material 3 / Carbon / Polaris / Primer / Atlassian | `rem` or `px`-authored-converted-to-`rem` for type; broadly consistent with the table above |
+
+Do not fight this convention. Every mature system and Tailwind itself default to `rem` for
+type and spacing, `px` for borders. Aligning with it is also the primitive-tier alignment
+argument already in `ai-agents.md`: models have this convention memorized.
+
+### Never do the 62.5% trick
+
+`html { font-size: 62.5%; }` (making `1rem = 10px` for easier mental math) breaks any
+third-party component that assumes `1rem` is a readable size, including a tooltip or date
+picker library your team did not author. There is no clean incremental migration path either.
+Use a Style Dictionary or CSS-variable conversion layer instead (`--font-size-md: 1rem`
+authored once, referenced everywhere) so the math is done once, not memorized.
+
+### Design-tool handoff: author in `px`, compile to `rem`
+
+Figma and most design tools work in `px`. Do not fight that either. **Store the token source
+in `px`, and let the build step convert to `rem`** (Style Dictionary's `size/pxToRem`
+transform, base 16, is the standard approach). This keeps the design surface intuitive while
+shipping the accessible unit, and it is the same "generate once, deterministically" principle
+already applied to token compilation elsewhere in this skill.
+
+### Fluid type: pair `rem` with `vw`, never use `vw` alone
+
+A `clamp()` built purely from viewport units (`clamp(1rem, 5vw, 3rem)` is fine; a bare `5vw`
+font-size is not) has a real accessibility problem: **browsers do not scale viewport units
+when zooming.** Pure `vw` type can fail to reach 200% at some viewport widths even though
+the user zoomed to 200%, which risks failing SC 1.4.4 in a way a `rem`-anchored fluid formula
+does not. Anchor fluid type to a `rem` minimum and maximum, with `vw` only supplying the
+middle interpolation, and verify the clamp actually doubles at 200% zoom across your
+breakpoint range rather than assuming it does.
+
+### Mobile: the 16px rule is a `px` threshold inside a `rem` system
+
+iOS Safari zooms into an input if its computed font size is below 16px, regardless of
+whether that 16px came from a `rem` or `px` declaration. This does not contradict the `rem`
+recommendation: `font-size: 1rem` at the default root size is 16px and is safe. The risk is
+a *smaller* `rem` value (`0.875rem` = 14px) on an input, which is unsafe regardless of unit.
+See `mobile-web.md`.
+
 ## Non-color token types
 
 **Color gets the attention; these are where systems quietly rot.** Same tiering discipline
