@@ -31,7 +31,8 @@ Every component ships with a story file. A component without one is not done.
 ### Global configuration
 
 - Theme switcher in the toolbar, applying real theme tokens.
-- Viewport addon configured with your actual breakpoints, not the defaults.
+- Viewport addon configured with your actual breakpoints, not the defaults, plus a real
+  phone preset. See `mobile-web.md` for what emulation cannot catch.
 - A docs landing page covering foundations: color, type, spacing, motion, and the visual
   philosophy.
 - Motion enabled. Do not globally disable transitions for snapshot stability; handle that

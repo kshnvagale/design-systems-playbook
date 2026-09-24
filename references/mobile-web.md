@@ -26,6 +26,34 @@ same way as any other token:
 }
 ```
 
+## How scaling works across viewports
+
+**The rule: layout changes across viewports, components mostly do not.** A Button, an
+Input, a Card's internal padding, and a touch target stay the same size on a phone and on a
+laptop. What changes is how many fit side by side, where the navigation lives, and how much
+air sits between page sections. Components adapt to their container through container
+queries; tokens stay fixed; only page-level spacing and display type flex.
+
+| What | Scales with viewport? | How |
+|---|---|---|
+| Display and heading type | **Yes** | Fluid `clamp()` anchored in `rem`, see below |
+| Body text | Usually no | Fixed `rem`. Some fluid scales grow body text slightly; see Contested |
+| Page and section spacing | **Yes** | Step it at breakpoints, or make only the section-level tokens fluid |
+| Grid gaps | Sometimes | Step at a breakpoint; keep the same token family |
+| Component internal padding | **No** | Fixed tokens. Change layout around the component, not inside it |
+| Touch target hit area | **Never shrinks** | Constant minimum at every viewport |
+| Borders, radius, shadows | No | Fixed `px` per `tokens.md` |
+| Density | Never denser on touch | Touch needs more room, not less. Desktop with a fine pointer may run denser |
+
+Two consequences for the token layer:
+
+- **Keep spacing tokens fixed.** Do not make the whole spacing scale fluid. If sections need
+  more air on large screens, add or step *section-level* tokens, and leave the component
+  scale alone. A fluid component scale means a Button is a different size on every device,
+  which is exactly the inconsistency a system exists to prevent.
+- **If you support density modes, tie them to pointer precision, not viewport width.** A
+  tablet in landscape is wide and still touch-driven. `(pointer: fine)` is the honest signal.
+
 ## Container queries: the addition that matters most for a component library
 
 A design system ships components that get placed in unknown contexts: a `Card` in a
@@ -41,8 +69,7 @@ express "respond to the space *this component* actually has." A container query 
 Tailwind v4 ships `@container` support natively. Browser support is broad in current
 evergreen browsers as of 2026. **Default to container queries for component-level layout
 decisions, and reserve viewport media queries for page-level layout** (nav collapse, overall
-grid). This is the single most useful CSS addition since the last version of this skill and
-should shape how you write layout-sensitive components going forward.
+grid).
 
 ## Fluid type: clamp() with rem, never pure vw
 
@@ -60,9 +87,10 @@ scaling term keeps zoom working while still scaling with the viewport. Utopia
 (utopia.fyi) is the standard method for generating a whole fluid scale this way rather than
 hand-tuning each `clamp()`.
 
-**Apply this to display and heading roles only.** Body text should stay a fixed, readable
-size; it does not need to grow with viewport width, and scaling it adds complexity for no
-readability benefit.
+**Default to fluid display and heading roles only.** Keep body text a fixed `rem` size. The
+default font-size setting already lets users enlarge it, and a viewport-driven body size
+adds a second moving part for little readability gain. Some fluid systems (Utopia's
+defaults among them) scale body text slightly; that is a legitimate choice, see Contested.
 
 ## Viewport units: `100vh` is broken on mobile, use `dvh`
 
@@ -80,7 +108,7 @@ Use the dynamic/small/large viewport unit family instead:
 
 ```css
 .bottom-sheet {
-  height: 100svh; /* covers only what is guaranteed visible */
+  max-height: 90svh; /* never taller than the guaranteed-visible area */
 }
 ```
 
@@ -114,6 +142,10 @@ pixels at Level AA; SC 2.5.5 recommends 44x44 at AAA; Apple HIG specifies 44pt; 
 specifies 48dp. `build-architecture.md`'s component spec template uses 44x44 deliberately
 above the AA floor, matching common mobile guidance. Treat 24x24 as the absolute floor for
 a dense internal tool, not as a default to design toward.
+
+**Spacing between targets counts.** SC 2.5.8 lets a target be smaller than 24x24 only if a
+24px circle centered on it does not overlap any adjacent target. Dense icon rows need gaps,
+not just big icons.
 
 **Separate visual size from hit area.** A visually small icon button can still have a 44x44
 hit area via padding or a pseudo-element, without changing how large it looks. This
@@ -150,12 +182,22 @@ undershot per-instance.
 **Set `inputmode` and `autocomplete` on every input by type.** `inputmode="numeric"` for a
 quantity field, `inputmode="email"` for an email field, brings up the correct virtual
 keyboard. `autocomplete` values (`email`, `tel`, `street-address`, `cc-number`) let the
-browser and password manager fill correctly. Treat both as required spec fields for the
-Text Input and Number Input atoms, not optional polish.
+browser and password manager fill correctly. Set `enterkeyhint` too (`search`, `send`, `next`, `done`) so the
+return key says what it will do. Treat all three as required spec fields for the Text Input
+and Number Input atoms, not optional polish.
 
 **The virtual keyboard can cover a fixed-bottom element** (a CTA bar, a bottom sheet's
-action row) when it opens. Test every fixed-bottom component with a real on-screen keyboard
+action row) when it opens. Chromium and Firefox support the viewport meta setting
+`interactive-widget=resizes-content`, which makes the layout viewport shrink so fixed
+elements move above the keyboard. **Safari does not support it**, so design fixed-bottom
+components to survive being covered, and never put the only way to submit a form there. Test every fixed-bottom component with a real on-screen keyboard
 open, not just in an emulator, since emulators do not reliably reproduce this.
+
+**Scroll locking behind a modal is notoriously unreliable on iOS Safari** if you hand-roll
+it with `overflow: hidden` on the body. Use the headless primitive's scroll lock (Radix
+Dialog handles this) rather than writing your own, and pair it with
+`overscroll-behavior: contain` on scrollable sheet content so the page behind does not
+scroll through it.
 
 ## Components that must behave differently on mobile
 
@@ -229,6 +271,10 @@ above, since a headless browser will not reproduce it.
   leave a visible gap when chrome is hidden. Pick per use case rather than standardizing one
   for the whole system.
 
+- **Fluid body text.** Fixed `rem` body text is simpler and already user-scalable through
+  the default font-size setting. Scaling it slightly with the viewport is defensible for
+  editorial and marketing surfaces. Pick deliberately per surface type.
+
 ## Common failure modes
 
 1. Designing on a 1440px desktop mock and treating "make it responsive" as a final pass
@@ -241,3 +287,7 @@ above, since a headless browser will not reproduce it.
    covering a button) that no CI check caught.
 7. Building a second, forked "mobile" component instead of specifying responsive behavior
    in the one component's spec.
+8. Making the whole spacing scale fluid, so components are a different size on every
+   device.
+9. Tying compact density to viewport width rather than pointer precision, which makes a
+   touch tablet in landscape dense and hard to tap.

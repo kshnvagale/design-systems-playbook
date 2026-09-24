@@ -211,7 +211,7 @@ this table, apply that test to the row you touched.
 | How many type roles? | 8-12 composite tokens, each bundling family, size, weight, line height. Not separate atomic tokens. |
 | Type scale ratio? | 1.125-1.2 for dense product UI. Larger ratios waste vertical space. Round to whole pixels. |
 | Emphasis via weight or color? | Weight. Color expresses hierarchy, not importance. Pick one and document it. |
-| Breakpoints? | Derive from where content breaks, not device names. Carbon's 320/672/1056/1584 is a safe default (four of Carbon's five; xlg 1312 omitted). |
+| Breakpoints? | Content-driven, not device-named, written in `rem`. Default values in `visual-language.md`. |
 | Density? | Per surface, not global. Scanning many things = tight. Reading about one thing = roomy. |
 | Icon grid? | 24x24 default, 16x16 for dense dashboards. One stroke weight, squared terminals, optical not mathematical sizing. |
 | Icon without a label? | Only if universally understood. Decorative icons get `aria-hidden`, meaningful ones need an accessible name. |
@@ -261,10 +261,11 @@ this table, apply that test to the row you touched.
 | Custom token names or Tailwind-aligned? | Align at the primitive tier unless you have a reason not to. |
 | Is `llms.txt` enough? | No. Use a registry or MCP the agent can query and act on. |
 | Stop agents shipping bad contrast? | Pair foreground/background tokens so an invalid combination cannot be expressed. |
-| px or rem? | **Per token type, not once.** Font size, spacing-around-text, breakpoints -> rem. Borders, radius, shadows -> px. `tokens.md` |
+| px or rem? | Per token type. Ask: *should this scale when the user raises their default font size?* Yes is rem, no is px. The table lives in `tokens.md`. |
 | Full-height layout on mobile? | `svh` or `dvh`, never `100vh`. `mobile-web.md` |
 | Component layout on mobile? | Container queries by default, viewport queries for page-level only. `mobile-web.md` |
-| Touch target size? | 44x44 default, 24x24 absolute floor with a documented reason. `mobile-web.md` |
+| Does a component get bigger on desktop? | No. Layout changes across viewports; components mostly do not. `mobile-web.md` |
+| Touch target size? | A token, and separate hit area from visual size. Values in `mobile-web.md`. |
 
 ---
 
