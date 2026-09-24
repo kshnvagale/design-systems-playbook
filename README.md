@@ -18,7 +18,7 @@ so cost scales with what you actually use:
 | `SKILL.md` | When the request matches | ~6,000 tokens |
 | A reference file | Only when routed to and read | 0 until opened |
 
-A typical task lands around 9-13k tokens. All 15 files at once is ~78k, which only happens
+A typical task lands around 9-13k tokens. All the files at once is ~78k, which only happens
 on a full end-to-end build.
 
 ## Map
@@ -33,6 +33,7 @@ on a full end-to-end build.
               naming.md               token taxonomy, ARIA-aligned component names
               components.md           canonical inventory, build order, API design
               marketing-surfaces.md   landing pages, the brand/product seam
+              mobile-web.md           scaling across viewports, touch, viewport units, inputs
 
 3. BUILD      orchestration.md        fan out to subagents, verify on return
               build-architecture.md   file shape, layer boundaries, the verify gate

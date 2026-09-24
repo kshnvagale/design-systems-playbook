@@ -280,6 +280,116 @@ is what ships and what CI can lint. Figma-first works only if you have a reliabl
 pipeline (native DTCG export, or Tokens Studio) feeding Style Dictionary. Otherwise design
 and code silently drift.
 
+## Units: px or rem, decided per token type
+
+**This file is the single source for unit decisions.** Other files point here rather than
+restating the table.
+
+It is not one decision. Josh Comeau's test resolves most of the disagreement
+([joshwcomeau.com](https://www.joshwcomeau.com/css/surprising-truth-about-pixels-and-accessibility/)):
+
+> **Should this value scale up when the user increases their browser's default font size?**
+> If yes, `rem`. If no, `px`.
+
+### Two mechanisms, and conflating them causes most bad advice
+
+- **Browser zoom** (Cmd/Ctrl +) scales *everything*, `px` included, in every major browser.
+- **The default font-size setting**, set once in browser preferences, only rescales `rem`,
+  `em`, and `%`. `px` ignores it. This is the gap `rem` closes: a user who sets a larger
+  default once, rather than zooming every site, gets nothing from `px` text.
+
+### What WCAG actually requires
+
+- **SC 1.4.4 Resize Text (AA):** text resizable to 200% without loss of content or
+  function. Zoom scales `px`, so **`px` typography is not by itself a 1.4.4 failure.**
+- **SC 1.4.10 Reflow (AA):** content usable without two-directional scrolling at a
+  **320 CSS px wide viewport**, the equivalent of 400% zoom on a 1280px screen. That is a
+  layout requirement, satisfied by responsive design, not by unit choice.
+
+So the case for `rem` is not "px fails WCAG." It is narrower and still real: `px` typography
+disables an assistive setting some users rely on everywhere.
+
+### The per-token-type table
+
+| Token type | Unit | Reason |
+|---|---|---|
+| Font size | `rem` | Must respond to the default font-size setting, not only zoom |
+| Line height | Unitless (`1.5`) | Scales with its font size; a unit compounds or fails to scale |
+| Spacing around and between text | `rem` | Larger text needs proportionally more room, or lines start crowding |
+| Spacing that defines a fixed shape | `px`, as a deliberate exception | An icon grid gap or fixed-width control should hold its shape and let text wrap |
+| Border width | `px` | A 1px hairline should stay 1px |
+| Border radius | `px` | A shape decision, not a reading-comfort one |
+| Icon size | `px`, or `rem` when paired 1:1 with a type role | Decide per icon role; if it sits in a line of text it should track that text |
+| Shadow offset and blur | `px` | Purely visual |
+| Media and container query breakpoints | `rem` | See below |
+| Max width of text containers | `ch` | Ties directly to line length in characters, which is the actual goal |
+
+**Default spacing to `rem`.** The `px` row is an exception to reach for on purpose, per
+case, not a second default.
+
+### Breakpoints in rem, the counterintuitive one
+
+A `px` breakpoint does not move when the user raises their default font size. A `rem`
+breakpoint does, so a user with larger text drops into the narrower layout at a wider
+physical screen. That is correct: breakpoints should track **available space for content**,
+and doubling the font size halves that space exactly like a narrower screen would. Tailwind
+v4 defines its default breakpoints in `rem` for this reason (`--breakpoint-sm: 40rem`).
+
+Old Safari bugs with relative units inside media queries are not a practical concern in
+current evergreen browsers.
+
+### Never use the 62.5% trick
+
+`html { font-size: 62.5% }` makes `1rem = 10px` for easier arithmetic, and breaks every
+third-party component, embed, and extension that assumes `1rem` is readable, rendering them
+37.5% too small. There is no clean incremental way back out, because every `rem` value in the
+codebase changes meaning. If the arithmetic is the friction, fix it at build time instead.
+
+### Author in px, compile to rem
+
+Design tools work in `px`, so let the token source say `space.16 = 16px` and convert at
+build time with Style Dictionary's `size/pxToRem` transform at base 16. Designers read
+familiar numbers, the browser gets the accessible unit, and nobody hand-types `1.0625rem`.
+Same principle as the rest of the pipeline: generate deterministically, do not hand-author.
+
+### Fluid type: anchor clamp() in rem, never bare vw
+
+Browsers do not scale viewport units on zoom, so `font-size: 5vw` can fail to reach 200%
+when the user zooms to 200%, a real SC 1.4.4 risk. Use a `rem` floor and ceiling with `vw`
+only interpolating between them, for example `clamp(1.75rem, 1rem + 3vw, 3rem)`, and check
+that it actually doubles at 200% zoom across your breakpoints. Which roles should be fluid
+at all is covered in `mobile-web.md`.
+
+### Mobile: 16px is a hard floor, and it is a resolved-pixel rule
+
+iOS Safari zooms into any input whose **computed** font size is under 16px, regardless of
+the source unit. `1rem` at the default root is 16px and safe; `0.875rem` is 14px and
+triggers zoom. See `mobile-web.md`.
+
+### What real systems ship, verified
+
+| System | Approach |
+|---|---|
+| Tailwind v4 | `rem`. A single `--spacing: 0.25rem` multiplier, so `p-4` is `1rem`. Breakpoints in `rem`. |
+| Radix Themes | **`px` times a scaling variable**, for example `--space-1: calc(4px * var(--scaling))`. Deliberately independent of the default font-size setting. |
+
+Only verified entries are listed. Check any other system's actual source before citing it.
+
+### Agent implications, stated as inference
+
+There is no direct evidence on whether `rem` or `px` changes how reliably an agent produces
+on-scale values. What is documented (`ai-agents.md`) is that models are heavily trained on
+Tailwind defaults, which are `rem`. Aligning to `rem` is therefore at worst neutral and
+plausibly reduces friction. Treat that as reasoning, not a finding.
+
+### Contested
+
+- **Radix Themes' px-with-scaling approach is a legitimate dissent**, not a mistake. It
+  trades respecting the default font-size setting for predictable layout and a single
+  product-controlled scaling knob. If you adopt Radix Themes you inherit that choice.
+- **How much spacing should be `rem`.** Everything-`rem` is simpler and scales uniformly;
+  selective `px` for fixed shapes is more precise and more work to keep consistent.
+
 ## Non-color token types
 
 **Color gets the attention; these are where systems quietly rot.** Same tiering discipline

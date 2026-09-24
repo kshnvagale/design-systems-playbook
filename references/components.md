@@ -207,6 +207,10 @@ the moment anything consumes them, and renaming after React exists touches every
 consumer. See `naming.md`, especially the ARIA-alignment rules for the contested names
 (Modal vs Dialog, Dropdown vs Listbox vs Menu vs Combobox).
 
+**Responsive behavior is part of each component's spec, not a separate mobile component.**
+See `mobile-web.md` for which components need explicit mobile behavior (Dialog, Select,
+Tooltip, Navigation, Table) and why a forked `MobileNav` is a naming smell.
+
 ## A defensible build order
 
 **Every name below resolves to an entry in the canonical inventory above, except the two

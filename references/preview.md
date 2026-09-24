@@ -196,6 +196,9 @@ state name. An unlabeled grid of buttons is decoration; a labeled one is documen
   visual affordance and the native element disagree. This is the single most common
   accessibility bug in a generated preview, and it survives into React if you do not catch
   it here.
+- **Reviewable at a phone width.** Include a viewport toggle, and let the left nav collapse
+  below the smallest breakpoint, so mobile layout gets judged at gate 1 rather than
+  discovered after React exists. See `mobile-web.md`.
 - **The company logo in place**, in the header and wherever the brand actually appears. A
   system reviewed without it gets judged as a generic kit rather than as their product.
 

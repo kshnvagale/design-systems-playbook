@@ -49,6 +49,11 @@ seems obviously "one."
 
 ### 3. Which platforms?
 
+**If web is in scope, ask whether mobile web matters as a first-class target** (not just
+"responsive as an afterthought"). If most usage will be mobile browsers, container queries,
+safe areas, and touch targets in `mobile-web.md` are not optional polish, they are core
+scope from day one.
+
 Ask: *Web only? Also native iOS/Android? React Native? Email?*
 
 Web-only lets you keep tokens as CSS custom properties and stop. Anything cross-platform

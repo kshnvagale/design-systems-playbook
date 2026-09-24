@@ -78,10 +78,10 @@ to:
 
 | Breakpoint | Width | Columns | Margin |
 |---|---|---|---|
-| Small | 320px | 4 | 0 |
-| Medium | 672px | 8 | 16px |
-| Large | 1056px | 16 | 16px |
-| Max | 1584px | 16 | 24px |
+| Small | 320px / 20rem | 4 | 0 |
+| Medium | 672px / 42rem | 8 | 16px |
+| Large | 1056px / 66rem | 16 | 16px |
+| Max | 1584px / 99rem | 16 | 24px |
 
 Carbon's underlying idea is worth understanding even if you pick different numbers: an
 **8px mini unit** as the basic geometric unit, with columns, rows, boxes, margins, and
@@ -103,6 +103,10 @@ If you cannot decide, ask which of those the user is doing. That question resolv
 almost every time.
 
 ### The implementable artifact
+
+Ship breakpoints in `rem` (see `tokens.md` for why). For how layout, spacing and
+components should adapt across those breakpoints, and when to use container queries
+instead, see `mobile-web.md`.
 
 Breakpoint tokens, column and gutter tokens, named container widths, and a documented
 density rule per surface type. Layout width is one of the few places where arbitrary

@@ -69,7 +69,9 @@ Without this written down in advance, every eval degrades into "it looks good en
 system was derived from, correct component mapping is indistinguishable from source
 recognition. Take a screenshot from a comparable product the system has never seen.
 
-**3. Vary surface *type*, not screen count.** Five transactional screens will all miss
+**3. Vary surface *type* and viewport, not screen count.** Run at least one held-out
+screen at a phone width, and one real-device pass before shipping, since emulation misses
+input zoom and the virtual keyboard (`mobile-web.md`). Five transactional screens will all miss
 the same gap. Cover: a dense list or grid, a form, an empty or error state, a marketing
 or promotional surface, and a settings or detail view. Five different *kinds* beats
 twenty of the same kind.
