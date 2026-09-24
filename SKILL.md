@@ -75,6 +75,7 @@ for components that do not exist.
 | Read this | When you are deciding |
 |---|---|
 | `references/discovery.md` | What to ask before anything else. Start here. |
+| `references/mobile-web.md` | Mobile-first defaults, container queries, viewport units, touch, input quirks |
 | `references/tokens.md` | Tiers, dark mode mechanics, theme axes, pipeline, non-color tokens |
 | `references/color.md` | Ramp construction, OKLCH, WCAG/APCA, palette composition |
 | `references/visual-language.md` | Typography, grid and responsive, iconography, motion, state design, content and voice |

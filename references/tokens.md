@@ -382,6 +382,85 @@ recommendation: `font-size: 1rem` at the default root size is 16px and is safe. 
 a *smaller* `rem` value (`0.875rem` = 14px) on an input, which is unsafe regardless of unit.
 See `mobile-web.md`.
 
+## Units: px or rem, decided per token type, not once for the whole system
+
+This is not an either/or choice. Josh Comeau's mental model is the right one and it holds up
+under scrutiny: for every value, ask **"should this scale up if the user increases their
+browser's default font size?"** If yes, use `rem`. If no, use `px`.
+
+(This is a different question from browser *zoom*. Zoom scales everything, `px` included,
+and has for years across all major browsers. The question above is about the separate
+*default font-size* setting, which only `rem`/`em`/`%` respond to. Both are real assistive
+mechanisms; `rem` is what makes the second one possible.)
+
+### What WCAG actually requires, precisely
+
+SC 1.4.4 (Resize Text, AA) requires text resizable to 200% without loss of content or
+functionality. SC 1.4.10 (Reflow, AA) requires content to reflow at that scale without
+requiring two-dimensional scrolling. **Neither criterion names `px` as a failure mode.**
+Browser zoom alone can satisfy both, since it scales `px` values along with everything else.
+The practical risk with `px`-only typography is narrower than "WCAG failure": it is that
+users who rely on the *default-font-size* mechanism specifically (rather than zoom) get no
+benefit from it, and that mechanism exists precisely because zoom is a per-site, per-visit
+action while a font-size preference is set once and should be respected everywhere.
+
+### The per-token-type table
+
+| Token type | Unit | Why |
+|---|---|---|
+| Font size | `rem` | Must respond to the user's default font-size preference |
+| Line height | Unitless multiplier | Scales automatically with font size, no unit conversion needed |
+| Spacing (padding, margin, gap) | `rem` | Comeau's real finding: rem-based spacing around text prevents a cramped few-words-per-line layout when a user scales up their font size. Fixed px spacing does not adapt and gets relatively tighter. |
+| Border width | `px` | Should not thicken as text scales; a 1px border is a fixed visual hairline |
+| Border radius | `px` | A visual shape decision, not a text-scaling concern |
+| Icon size | `px` (or `rem` if intentionally paired 1:1 with adjacent text) | Usually a fixed visual asset; pair to type role explicitly if it should scale with it |
+| Media query / container query breakpoints | `rem` | See the worked example below; this is the one most people get backwards |
+| Max-width for text containers | `ch` or `rem` | `ch` ties directly to line length in characters, which is the actual goal |
+
+### Media queries in rem, the non-obvious one
+
+A breakpoint written in `px` does not move when a user increases their default font size. A
+breakpoint written in `rem` does, because `rem` is relative to that same setting. This means
+a `rem` breakpoint drops a user with a larger default font size into the narrower layout
+sooner, at a wider physical viewport, which sounds wrong until you consider what it is
+actually optimizing for: **available space**, not physical screen size. A user who has
+doubled their font size has less room for content on the same screen, exactly like a
+narrower viewport does, and should get the same layout accommodations. This is why Tailwind
+v4 defines its own breakpoints in `rem` by default (`sm` at 40rem, not 640px).
+
+### The 62.5% trick is a real trap, avoid it
+
+Setting `html { font-size: 62.5% }` so that `1rem = 10px` makes the mental math easier, but
+it breaks the web-wide assumption that `1rem` produces readable text. Any third-party
+component, embed, or browser extension that assumes the default `1rem = 16px` renders 37.5%
+too small inside your page. There is also no clean incremental migration path; every `rem`
+value in the codebase means something different before and after the change. Do not use it.
+If the `px`-to-`rem` mental math is the actual friction, solve it with build-time conversion
+(a Style Dictionary `pxToRem` transform, base 16) or with a lookup table of CSS custom
+properties, not by redefining what `1rem` means globally.
+
+### Author in px, compile to rem
+
+Design tools work in `px`. Let token authors write `space.16 = 16px` in the DTCG source, and
+convert to `rem` at build time (Style Dictionary's `size/pxToRem` transform, base 16, is the
+standard mechanism). This keeps the source legible to designers and Figma while shipping the
+unit that actually needs to be relative. Do not hand-author `rem` values with the resulting
+decimals (`1.0625rem`); generate them.
+
+### The mobile interaction: 16px is a hard floor regardless of unit system
+
+iOS Safari zooms into any input whose *computed* font size resolves under 16px, and this
+holds whether your source token was written in `px` or `rem`. Choosing `rem` for typography
+does not create or remove this constraint; it is about the resolved pixel value at runtime.
+See `mobile-web.md` for the full mobile input-quirks list.
+
+### Agent implications, stated as inference, not a finding
+
+No direct evidence was found on whether `rem` versus `px` changes how reliably an agent
+produces on-scale values. What is documented (`ai-agents.md`) is that models are heavily
+trained on Tailwind's defaults, which are already `rem`-based, so aligning to `rem` is at
+worst neutral and likely reduces friction against that training prior rather than adding any.
+
 ## Non-color token types
 
 **Color gets the attention; these are where systems quietly rot.** Same tiering discipline
